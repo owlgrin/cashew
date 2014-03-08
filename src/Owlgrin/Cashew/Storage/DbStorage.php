@@ -14,20 +14,19 @@ class DbStorage implements Storage {
 		return $this->subscriptionByUser($id);
 	}
 
-	public function store($user, Customer $customer)
+	public function store($userId, Customer $customer)
 	{
 		try
 		{
 			$subscription = $customer->subscription();
-			$card = $customer->card();
 
 			$id = DB::table(Config::get('cashew::table'))->insertGetId(array(
-				'user_id' => $user['id'],
+				'user_id' => $userId,
 				'customer_id' => $customer->id(),
 				'subscription_id' => $subscription->id(),
 				'ends_at' => $subscription->currentEnd(),
 				'plan' => $subscription->plan(),
-				'last_four' => $card['last4'],
+				'last_four' => $customer->card()->lastFour(),
 				'status' => $subscription->status(),
 				'created_at' => DB::raw('now()'),
 				'updated_at' => DB::raw('now()')
@@ -46,7 +45,6 @@ class DbStorage implements Storage {
 		try
 		{
 			$subscription = $customer->subscription();
-			$card = $customer->card();
 
 			$id = DB::table(Config::get('cashew::table'))
 				->where('customer_id', '=', $customer->id())
@@ -54,7 +52,7 @@ class DbStorage implements Storage {
 					'subscription_id' => $subscription->id(),
 					'ends_at' => $subscription->currentEnd(),
 					'plan' => $subscription->plan(),
-					'last_four' => $card['last4'],
+					'last_four' => $customer->card()->lastFour(),
 					'status' => $subscription->status(),
 					'updated_at' => DB::raw('now()')
 				));

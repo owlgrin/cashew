@@ -61,7 +61,7 @@ class Cashew {
 
 			$options = array_merge($this->options, $options);
 			$customer = $this->gateway->subscribe($user, $card, $plan, $options);
-			$this->storage->store($user, $customer);
+			$this->storage->store($user['id'], $customer);
 
 			$this->user($user['id']); // for further usage
 		}

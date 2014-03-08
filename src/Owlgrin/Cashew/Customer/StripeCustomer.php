@@ -2,6 +2,7 @@
 
 use Owlgrin\Cashew\Customer\Customer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
+use Owlgrin\Cashew\Card\StripeCard;
 
 class StripeCustomer implements Customer {
 
@@ -29,6 +30,6 @@ class StripeCustomer implements Customer {
 
 	public function card()
 	{
-		return $this->customer['cards']['data'][0];
+		return new StripeCard($this->customer['cards']['data'][0]);
 	}
 }
