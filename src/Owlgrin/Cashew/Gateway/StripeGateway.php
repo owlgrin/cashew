@@ -1,6 +1,7 @@
 <?php namespace Owlgrin\Cashew\Gateway;
 
 use Stripe_Customer, Stripe_CardError, Stripe_Error;
+use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 
 class StripeGateway implements Gateway {
@@ -21,7 +22,7 @@ class StripeGateway implements Gateway {
 				)
 			));
 
-			return $customer;
+			return new StripeCustomer($customer);
 		}
 		catch(Stripe_CardError $e)
 		{
@@ -75,7 +76,7 @@ class StripeGateway implements Gateway {
 				if($value) $customer->{$option} = $value;
 			}
 
-			return $customer->save();
+			return new StripeCustomer($customer->save());
 		}
 		catch(Stripe_CardError $e)
 		{

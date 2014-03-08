@@ -1,6 +1,7 @@
 <?php namespace Owlgrin\Cashew\Storage;
 
 use Owlgrin\Cashew\Storage\Storage;
+use Owlgrin\Cashew\Customer\Customer;
 use Owlgrin\Cashew\Subscription\Subscription;
 use Carbon\Carbon, Config, DB;
 
@@ -13,21 +14,21 @@ class DbStorage implements Storage {
 		return $this->subscriptionByUser($id);
 	}
 
-	public function store($user, $customer)
+	public function store($user, Customer $customer)
 	{
 		try
 		{
-			$subscription = $customer['subscription'];
-			$card = $customer['cards']['data'][0];
+			$subscription = $customer->subscription();
+			$card = $customer->card();
 
 			$id = DB::table(Config::get('cashew::table'))->insertGetId(array(
 				'user_id' => $user['id'],
-				'customer_id' => $customer['id'],
-				'subscription_id' => $subscription['id'],
-				'ends_at' => Carbon::createFromTimestamp($subscription['current_period_end'])->toDateString(),
-				'plan' => $subscription['plan']['id'],
+				'customer_id' => $customer->id(),
+				'subscription_id' => $subscription->id(),
+				'ends_at' => $subscription->currentEnd(),
+				'plan' => $subscription->plan(),
 				'last_four' => $card['last4'],
-				'status' => $subscription['status'],
+				'status' => $subscription->status(),
 				'created_at' => DB::raw('now()'),
 				'updated_at' => DB::raw('now()')
 			));
@@ -40,21 +41,21 @@ class DbStorage implements Storage {
 		}
 	}
 
-	public function update($customer)
+	public function update(Customer $customer)
 	{
 		try
 		{
-			$subscription = $customer['subscription'];
-			$card = $customer['cards']['data'][0];
+			$subscription = $customer->subscription();
+			$card = $customer->card();
 
 			$id = DB::table(Config::get('cashew::table'))
-				->where('customer_id', '=', $customer['id'])
+				->where('customer_id', '=', $customer->id())
 				->update(array(
-					'subscription_id' => $subscription['id'],
-					'ends_at' => Carbon::createFromTimestamp($subscription['current_period_end'])->toDateString(),
-					'plan' => $subscription['plan']['id'],
+					'subscription_id' => $subscription->id(),
+					'ends_at' => $subscription->currentEnd(),
+					'plan' => $subscription->plan(),
 					'last_four' => $card['last4'],
-					'status' => $subscription['status'],
+					'status' => $subscription->status(),
 					'updated_at' => DB::raw('now()')
 				));
 

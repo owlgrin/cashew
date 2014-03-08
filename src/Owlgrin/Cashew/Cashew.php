@@ -71,7 +71,7 @@ class Cashew {
 		}
 	}
 
-	public function update($userId, $options = array())
+	public function update($options = array())
 	{
 		try
 		{
