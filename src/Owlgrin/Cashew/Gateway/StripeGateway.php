@@ -1,6 +1,7 @@
 <?php namespace Owlgrin\Cashew\Gateway;
 
 use Stripe_Customer, Stripe_CardError, Stripe_Error;
+use Owlgrin\Cashew\Subscription\StripeSubscription;
 
 class StripeGateway implements Gateway {
 	public function subscribe($user, $card, $plan, $options = array())
@@ -47,7 +48,7 @@ class StripeGateway implements Gateway {
 				if($value) $subscription->{$option} = $value;
 			}
 
-			return $subscription->save();
+			return new StripeSubscription($subscription->save());
 		}
 		catch(Stripe_CardError $e)
 		{
@@ -94,7 +95,9 @@ class StripeGateway implements Gateway {
 	{
 		try
 		{
-			return Stripe_Customer::retrieve($customer)->subscriptions->retrieve($subscription)->cancel(array('at_period_end' => true));
+			$subscription = Stripe_Customer::retrieve($customer)->subscriptions->retrieve($subscription)->cancel(array('at_period_end' => true));
+
+			return new StripeSubscription($subscription);
 		}
 		catch(Stripe_CardError $e)
 		{

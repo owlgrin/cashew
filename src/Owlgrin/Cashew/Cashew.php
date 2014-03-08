@@ -97,7 +97,7 @@ class Cashew {
 			$subscription = $this->gateway->updateSubscription($this->subscription['customer_id'],
 																$this->subscription['subscription_id'],
 																array('plan' => $plan, 'prorate' => $prorate));
-			$this->storage->toPlan($customer, $subscription);
+			$this->storage->toPlan($userId, $subscription);
 
 			$this->refreshSubscription();
 		}

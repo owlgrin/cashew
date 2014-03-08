@@ -1,6 +1,7 @@
 <?php namespace Owlgrin\Cashew\Storage;
 
 use Owlgrin\Cashew\Storage\Storage;
+use Owlgrin\Cashew\Subscription\Subscription;
 use Carbon\Carbon, Config, DB;
 
 class DbStorage implements Storage {
@@ -65,17 +66,17 @@ class DbStorage implements Storage {
 		}
 	}
 
-	public function toPlan($customer, $subscription)
+	public function toPlan($userId, Subscription $subscription)
 	{
 		try
 		{
 			$id = DB::table(Config::get('cashew::table'))
-				->where('customer_id', '=', $customer)
-				->where('subscription_id', '=', $subscription['id'])
+				->where('user_id', '=', $userId)
+				->where('subscription_id', '=', $subscription->id())
 				->update(array(
-					'ends_at' => Carbon::createFromTimestamp($subscription['current_period_end'])->toDateString(),
-					'plan' => $subscription['plan']['id'],
-					'status' => $subscription['status'],
+					'ends_at' => $subscription->currentEnd(),
+					'plan' => $subscription->plan(),
+					'status' => $subscription->status(),
 					'updated_at' => DB::raw('now()')
 				));
 
@@ -87,13 +88,13 @@ class DbStorage implements Storage {
 		}
 	}
 
-	public function cancel($userId, $subscription)
+	public function cancel($userId, Subscription $subscription)
 	{
 		try
 		{
 			$id = DB::table(Config::get('cashew::table'))
 				->where('user_id', '=', $userId)
-				->where('subscription_id', '=', $subscription['id'])
+				->where('subscription_id', '=', $subscription->id())
 				->update(array(
 					'status' => 'canceled',
 					'updated_at' => DB::raw('now()')
@@ -107,17 +108,17 @@ class DbStorage implements Storage {
 		}
 	}
 
-	public function reactivate($userId, $subscription)
+	public function reactivate($userId, Subscription $subscription)
 	{
 		try
 		{
 			DB::table(Config::get('cashew::table'))
 				->where('user_id', '=', $userId)
-				->where('subscription_id', '=', $subscription['id'])
+				->where('subscription_id', '=', $subscription->id())
 				->update(array(
-					'ends_at' => Carbon::createFromTimestamp($subscription['current_period_end'])->toDateString(),
-					'plan' => $subscription['plan']['id'],
-					'status' => $subscription['status'],
+					'ends_at' => $subscription->currentEnd(),
+					'plan' => $subscription->plan(),
+					'status' => $subscription->status(),
 					'updated_at' => DB::raw('now()')
 				));
 		}
