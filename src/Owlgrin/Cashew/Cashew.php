@@ -88,7 +88,7 @@ class Cashew {
 		}
 	}
 
-	public function toPlan($userId, $plan, $prorate = true)
+	public function toPlan($plan, $prorate = true)
 	{
 		try
 		{
@@ -97,7 +97,7 @@ class Cashew {
 			$subscription = $this->gateway->updateSubscription($this->subscription['customer_id'],
 																$this->subscription['subscription_id'],
 																array('plan' => $plan, 'prorate' => $prorate));
-			$this->storage->toPlan($userId, $subscription);
+			$this->storage->toPlan($this->user, $subscription);
 
 			$this->refreshSubscription();
 		}
@@ -107,15 +107,16 @@ class Cashew {
 		}
 	}
 
-	public function cancel($userId)
+	public function cancel()
 	{
 		try
 		{
+			if( ! $this->user) throw new \Exception('No user');
 			if( ! $this->subscription) throw new \Exception('No subscription');
 
 			$subscription = $this->gateway->cancel($this->subscription['customer_id'],
 													$this->subscription['subscription_id']);
-			$this->storage->cancel($userId, $subscription);
+			$this->storage->cancel($this->user, $subscription);
 
 			$this->refreshSubscription();
 		}
@@ -125,16 +126,19 @@ class Cashew {
 		}
 	}
 
-	public function reactivate($userId, $plan = null)
+	public function reactivate($plan = null)
 	{
 		try
 		{
-			if( ! $this->canceled($userId)) throw new \Exception('Cannot be reactivated');
+			if( ! $this->user) throw new \Exception('No user');
+			if( ! $this->subscription) throw new \Exception('No subscription');
+			
+			if( ! $this->canceled($this->user)) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled
 
 			$subscription = $this->gateway->updateSubscription($this->subscription['customer_id'],
 																$this->subscription['subscription_id'],
 																array('plan' => $plan ? $plan : $this->subscription['plan']));
-			$this->storage->reactivate($userId, $subscription);
+			$this->storage->reactivate($this->user, $subscription);
 
 			$this->refreshSubscription();
 		}
