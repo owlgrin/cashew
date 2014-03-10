@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateCashewTable extends Migration {
+
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('_cashew', function(Blueprint $table)
+		{
+			$table->increments('id');
+			$table->integer('user_id');
+			$table->string('customer_id', 51);
+			$table->string('subscription_id', 51);
+			$table->dateTime('ends_at');
+			$table->string('plan', 51);
+			$table->string('last_four', 11);
+			$table->enum('status', array('trialing', 'active', 'canceled', 'expired'))->default('active');
+			$table->dateTime('created_at');
+			$table->dateTime('updated_at');
+		});
+	}
+
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::table('_cashew', function(Blueprint $table)
+		{
+			$table->drop();
+		});
+	}
+}

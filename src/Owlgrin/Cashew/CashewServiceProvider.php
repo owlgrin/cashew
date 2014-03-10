@@ -27,6 +27,13 @@ class CashewServiceProvider extends ServiceProvider {
 		});
 
 		$this->app->bind('Owlgrin\Cashew\Storage\Storage', 'Owlgrin\Cashew\Storage\DbStorage');
+
+		$this->app->bindShared('command.cashew.table', function($app)
+		{
+			return new \Owlgrin\Cashew\CashewTableCommand;
+		});
+
+		$this->commands('command.cashew.table');
 		
 		$this->app->singleton('cashew', 'Owlgrin\Cashew\Cashew');
 	}
