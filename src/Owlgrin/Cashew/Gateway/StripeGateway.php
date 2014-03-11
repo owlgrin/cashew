@@ -5,24 +5,45 @@ use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 
 class StripeGateway implements Gateway {
-	public function subscribe($user, $card, $plan, $options = array())
+	public function create($id, $meta = array())
 	{
 		try
 		{
 			$customer = Stripe_Customer::create(array(
-				'card' => $card,
-				'plan' => $plan,
-				'trial_end' => $options['trial_end'],
-				'quantity' => $options['quantity'],
-				'coupon' => $options['coupon'],
-				'description' => 'Customer for ' . $user['email'],
-				'metadata' => array(
-					'_id' => $user['id'],
-					'_email' => $user['email']
-				)
+				'description' => 'Customer with User ID: ' . $id,
+				'metadata' => $meta
 			));
 
 			return new StripeCustomer($customer);
+		}
+		catch(Stripe_CardError $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function subscribe($customer, $card, $plan, $options = array())
+	{
+		try
+		{
+			Stripe_Customer::retrieve($customer)
+				->subscriptions->create(array(
+					'card' => $card,
+					'plan' => $plan,
+					'trial_end' => $options['trial_end'],
+					'quantity' => $options['quantity'],
+					'coupon' => $options['coupon']
+				));
+
+			return new StripeCustomer(Stripe_Customer::retrieve($customer));
 		}
 		catch(Stripe_CardError $e)
 		{

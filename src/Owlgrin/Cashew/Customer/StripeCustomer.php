@@ -25,7 +25,7 @@ class StripeCustomer implements Customer {
 
 	public function subscription()
 	{
-		return new StripeSubscription($this->customer['subscription']);
+		return new StripeSubscription($this->customer['subscriptions']['data'][0]);
 	}
 
 	public function card()

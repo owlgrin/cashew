@@ -2,7 +2,7 @@
 
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Gateway\Gateway;
-use Carbon\Carbon, Config;
+use Carbon\Carbon;
 
 class Cashew {
 	protected $options = array(
@@ -50,20 +50,40 @@ class Cashew {
 		return $this->subscription;
 	}
 
-	public function create($user, $card, $plan, $options = array())
+	public function create($id, $meta = array())
 	{
 		try
 		{
-			if( ! Config::get('cashew::multiple') and $this->storage->subscription($user['id']))
-			{
-				throw new \Exception('Subscription already exist');
-			}
+			if($this->storage->subscription($id)) throw new \Exception('Customer already exist');
+
+			$customer = $this->gateway->create($id, $meta);
+			$this->storage->create($id, $customer);
+
+			$this->user($id); // for further usage
+
+			return $this;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function subscribe($card, $plan, $options = array())
+	{
+		try
+		{
+			if( ! $this->user) throw new \Exception('Customer not found');
+			if( ! $this->subscription) throw new \Exception('Subscription not found');
+			if($this->subscription['plan'] != '') throw new \Exception('Subscription already exist');
 
 			$options = array_merge($this->options, $options);
-			$customer = $this->gateway->subscribe($user, $card, $plan, $options);
-			$this->storage->store($user['id'], $customer);
+			$subscription = $this->gateway->subscribe($this->subscription['customer_id'], $card, $plan, $options);
+			$this->storage->subscribe($this->user, $subscription);
 
-			$this->user($user['id']); // for further usage
+			$this->refreshSubscription();
+
+			return $this;
 		}
 		catch(\Exception $e)
 		{
@@ -81,6 +101,8 @@ class Cashew {
 			$this->storage->update($customer);
 
 			$this->refreshSubscription();
+
+			return $this;
 		}
 		catch(\Exception $e)
 		{
@@ -100,6 +122,8 @@ class Cashew {
 			$this->storage->toPlan($this->user, $subscription);
 
 			$this->refreshSubscription();
+
+			return $this;
 		}
 		catch(\Exception $e)
 		{
@@ -119,6 +143,8 @@ class Cashew {
 			$this->storage->cancel($this->user, $subscription);
 
 			$this->refreshSubscription();
+
+			return $this;
 		}
 		catch(\Exception $e)
 		{
@@ -141,6 +167,8 @@ class Cashew {
 			$this->storage->reactivate($this->user, $subscription);
 
 			$this->refreshSubscription();
+
+			return $this;
 		}
 		catch (\Exception $e)
 		{

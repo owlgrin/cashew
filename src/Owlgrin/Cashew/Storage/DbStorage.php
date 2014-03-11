@@ -3,6 +3,7 @@
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Customer\Customer;
 use Owlgrin\Cashew\Subscription\Subscription;
+use Owlgrin\Cashew\Card\Card;
 use Carbon\Carbon, Config, DB;
 
 class DbStorage implements Storage {
@@ -14,25 +15,43 @@ class DbStorage implements Storage {
 		return $this->subscriptionByUser($id);
 	}
 
-	public function store($userId, Customer $customer)
+	public function create($userId, Customer $customer)
 	{
 		try
 		{
-			$subscription = $customer->subscription();
-
 			$id = DB::table(Config::get('cashew::table'))->insertGetId(array(
 				'user_id' => $userId,
 				'customer_id' => $customer->id(),
-				'subscription_id' => $subscription->id(),
-				'ends_at' => $subscription->currentEnd(),
-				'plan' => $subscription->plan(),
-				'last_four' => $customer->card()->lastFour(),
-				'status' => $subscription->status(),
+				'status' => 'trialing',
 				'created_at' => DB::raw('now()'),
 				'updated_at' => DB::raw('now()')
 			));
 
 			return $id;
+		}
+		catch(\PDOException $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function subscribe($userId, Customer $customer)
+	{
+		try
+		{
+			$subscription = $customer->subscription();
+
+			DB::table(Config::get('cashew::table'))
+				->where('user_id', '=', $userId)
+				->update(array(
+					'subscription_id' => $subscription->id(),
+					'ends_at' => $subscription->currentEnd(),
+					'plan' => $subscription->plan(),
+					'last_four' => $customer->card()->lastFour(),
+					'status' => $subscription->status(),
+					'created_at' => DB::raw('now()'),
+					'updated_at' => DB::raw('now()')
+				));
 		}
 		catch(\PDOException $e)
 		{
