@@ -5,5 +5,6 @@ interface Subscription {
 	public function id();
 	public function plan();
 	public function status();
+	public function trialEnd();
 	public function currentEnd();
 }

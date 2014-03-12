@@ -5,13 +5,13 @@ use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 
 class StripeGateway implements Gateway {
-	public function create($id, $meta = array())
+	public function create($card, $description = '')
 	{
 		try
 		{
 			$customer = Stripe_Customer::create(array(
-				'description' => 'Customer with User ID: ' . $id,
-				'metadata' => $meta
+				'card' => $card,
+				'description' => $description
 			));
 
 			return new StripeCustomer($customer);
@@ -30,24 +30,14 @@ class StripeGateway implements Gateway {
 		}
 	}
 
-	public function subscribe($customer, $card, $plan, $options = array())
+	public function update($customer, $options = array())
 	{
 		try
 		{
-			Stripe_Customer::retrieve($customer)
-				->subscriptions->create(array(
-					'card' => $card,
-					'plan' => $plan,
-					'trial_end' => $options['trial_end'],
-					'quantity' => $options['quantity'],
-					'coupon' => $options['coupon']
-				));
+			$subscription = Stripe_Customer::retrieve($customer)
+				->updateSubscription($options);
 
-			return new StripeCustomer(Stripe_Customer::retrieve($customer));
-		}
-		catch(Stripe_CardError $e)
-		{
-			throw new \Exception($e->getMessage());
+			return new StripeSubscription($subscription);
 		}
 		catch(Stripe_Error $e)
 		{

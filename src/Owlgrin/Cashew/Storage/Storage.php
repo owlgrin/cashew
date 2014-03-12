@@ -5,8 +5,9 @@ use Owlgrin\Cashew\Subscription\Subscription;
 
 interface Storage {
 	public function subscription($id);
-	public function create($userId, Customer $customer);
-	public function subscribe($userId, Customer $customer);
+	public function create($userId, $trialEnd);
+	public function customer($userId, Customer $customer);
+	public function subscribe($userId, Subscription $subscription);
 	public function update(Customer $customer);
 	public function toPlan($userId, Subscription $subscription);
 	public function cancel($userId, Subscription $subscription);

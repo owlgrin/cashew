@@ -2,14 +2,9 @@
 
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Gateway\Gateway;
-use Carbon\Carbon;
+use Carbon\Carbon, Config;
 
 class Cashew {
-	protected $options = array(
-		'coupon' => null,
-		'trial_end' => null,
-		'quantity' => 1
-	);
 
 	const STATUS_TRIAL = 'trialing';
 	const STATUS_CANCEL = 'canceled';
@@ -50,14 +45,13 @@ class Cashew {
 		return $this->subscription;
 	}
 
-	public function create($id, $meta = array())
+	public function create($id, $trialDays = null)
 	{
 		try
 		{
 			if($this->storage->subscription($id)) throw new \Exception('Customer already exist');
 
-			$customer = $this->gateway->create($id, $meta);
-			$this->storage->create($id, $customer);
+			$this->storage->create($id, $this->getTrialEnd($trialDays));
 
 			$this->user($id); // for further usage
 
@@ -69,155 +63,59 @@ class Cashew {
 		}
 	}
 
-	public function subscribe($card, $plan, $options = array())
+	public function subscribe($card, $description = '', $options)
 	{
 		try
 		{
-			if( ! $this->user) throw new \Exception('Customer not found');
-			if( ! $this->subscription) throw new \Exception('Subscription not found');
-			if($this->subscription['plan'] != '') throw new \Exception('Subscription already exist');
+			if( ! $this->subscription) throw new \Exception('No subscription found');
+			if( ! $this->subscription['customer_id']) $this->createCustomer($card, $description);
 
-			$options = array_merge($this->options, $options);
-			$subscription = $this->gateway->subscribe($this->subscription['customer_id'], $card, $plan, $options);
-			$this->storage->subscribe($this->user, $subscription);
-
-			$this->refreshSubscription();
-
-			return $this;
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
-
-	public function update($options = array())
-	{
-		try
-		{
-			if( ! $this->subscription) throw new \Exception('No subscription');
-
-			$customer = $this->gateway->updateCustomer($this->subscription['customer_id'], $options);
-			$this->storage->update($customer);
-
-			$this->refreshSubscription();
-
-			return $this;
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
-
-	public function toPlan($plan, $prorate = true)
-	{
-		try
-		{
-			if( ! $this->subscription) throw new \Exception('No subscription');
-
-			$subscription = $this->gateway->updateSubscription($this->subscription['customer_id'],
-																$this->subscription['subscription_id'],
-																array('plan' => $plan, 'prorate' => $prorate));
-			$this->storage->toPlan($this->user, $subscription);
-
-			$this->refreshSubscription();
-
-			return $this;
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
-
-	public function cancel()
-	{
-		try
-		{
-			if( ! $this->user) throw new \Exception('No user');
-			if( ! $this->subscription) throw new \Exception('No subscription');
-
-			$subscription = $this->gateway->cancel($this->subscription['customer_id'],
-													$this->subscription['subscription_id']);
-			$this->storage->cancel($this->user, $subscription);
-
-			$this->refreshSubscription();
-
-			return $this;
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
-
-	public function reactivate($plan = null)
-	{
-		try
-		{
-			if( ! $this->user) throw new \Exception('No user');
-			if( ! $this->subscription) throw new \Exception('No subscription');
+			$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ?: null);
 			
-			if( ! $this->canceled($this->user)) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled
+			$subscription = $this->gateway->update($this->subscription['customer_id'], $options);
 
-			$subscription = $this->gateway->updateSubscription($this->subscription['customer_id'],
-																$this->subscription['subscription_id'],
-																array('plan' => $plan ? $plan : $this->subscription['plan']));
-			$this->storage->reactivate($this->user, $subscription);
+			$this->storage->subscribe($this->user, $subscription);
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	private function getTrialEnd($days = null)
+	{
+		// special case for ending trial right now
+		if($days == 'now') return $days;
+
+		// if number of days is passed, we will calculate the end based upon it
+		if($days)
+		{
+			return Carbon::today()->addDays($days)->toDateString();
+		}
+
+		// otherwise, if there was an ongoing trial, keep that as the trial else null
+		else
+		{
+			if( ! $this->subscription) return null; // if no previous subsccription
+
+			return $this->subscription['trial_ends_at'] // if there's trial end in previous subscription
+				? Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at'])->getTimestamp()
+				: null;
+		}
+	}
+
+	private function createCustomer($card, $description)
+	{
+		try
+		{
+			$customer = $this->gateway->create($card, $description);
+			$this->storage->customer($this->user, $customer);
 
 			$this->refreshSubscription();
-
-			return $this;
 		}
-		catch (\Exception $e)
+		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());	
+			throw new \Exception($e->getMessage());
 		}
-	}
-
-	public function onTrial()
-	{
-		if( ! $this->subscription) throw new \Exception('No subscription');
-
-		return $this->subscription['status'] == self::STATUS_TRIAL
-				and Carbon::today()->lte(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['ends_at']));
-	}
-
-	public function onGrace()
-	{
-		if( ! $this->subscription) throw new \Exception('No subscription');
-
-		return $this->subscription['status'] == self::STATUS_CANCEL
-				and Carbon::today()->lte(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['ends_at']));
-	}
-
-	public function expired()
-	{
-		if( ! $this->subscription) throw new \Exception('No subscription');
-
-		return $this->subscription['status'] == self::STATUS_EXPIRE;
-	}
-
-	public function subscribed()
-	{
-		if( ! $this->subscription) throw new \Exception('No subscription');
-
-		return $this->subscription['status'] == self::STATUS_ACTIVE
-				and Carbon::today()->lte(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['ends_at']));
-	}
-
-	public function canceled()
-	{
-		if( ! $this->subscription) throw new \Exception('No subscription');
-
-		return $this->subscription['status'] == self::STATUS_CANCEL;
-	}
-
-	public function onPlan($plan)
-	{
-		if( ! $this->subscription) throw new \Exception('No subscription');
-
-		return $this->subscription['plan'] == $plan;
 	}
 }
