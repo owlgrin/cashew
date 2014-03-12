@@ -11,5 +11,5 @@ interface Storage {
 	public function update($userId, Customer $customer);
 	// public function toPlan($userId, Subscription $subscription);
 	public function cancel($userId, Subscription $subscription);
-	public function reactivate($userId, Subscription $subscription);
+	// public function reactivate($userId, Subscription $subscription);
 }
