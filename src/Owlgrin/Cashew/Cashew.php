@@ -137,7 +137,7 @@ class Cashew {
 
 	public function resume($options = array())
 	{
-		// if( ! $this->canceled()) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled
+		if( ! $this->canceled()) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled
 
 		// if new plan passed, then consider it else default to the previous plan
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
@@ -149,6 +149,54 @@ class Cashew {
 		$options['prorate'] = false;
 
 		return $this->subscribe(null, '', $options);
+	}
+
+	public function onTrial()
+	{
+		if( ! $this->subscription) throw new \Exception('No subscription found');
+
+		if(is_null($this->subscription['trial_ends_at'])) return false;
+
+		return $this->subscription['status'] == self::STATUS_TRIAL
+				and Carbon::today()->lt(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at']));
+	}
+
+	public function onGrace()
+	{
+		if( ! $this->subscription) throw new \Exception('No subscription found');
+
+		if(is_null($this->subscription['subscription_ends_at'])) return false;
+
+		return $this->subscription['status'] == self::STATUS_CANCEL
+				and Carbon::today()->lt(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['ends_at']));
+	}
+
+	public function expired()
+	{
+		if( ! $this->subscription) throw new \Exception('No subscription found');
+
+		return $this->subscription['status'] == self::STATUS_EXPIRE;
+	}
+
+	public function subscribed()
+	{
+		if( ! $this->subscription) throw new \Exception('No subscription found');
+
+		return $this->subscription['status'] == self::STATUS_ACTIVE;
+	}
+
+	public function canceled()
+	{
+		if( ! $this->subscription) throw new \Exception('No subscription found');
+
+		return $this->subscription['status'] == self::STATUS_CANCEL;
+	}
+
+	public function onPlan($plan)
+	{
+		if( ! $this->subscription) throw new \Exception('No subscription found');
+
+		return $this->subscription['plan'] == $plan;
 	}
 
 	private function getTrialEnd($days = null)
