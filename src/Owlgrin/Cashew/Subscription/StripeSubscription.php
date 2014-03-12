@@ -45,4 +45,11 @@ class StripeSubscription implements Subscription {
 			? Carbon::createFromTimestamp($this->subscription['current_period_end'])->toDateString()
 			: $this->subcription['current_period_end'];
 	}
+
+	public function end($formatted = true)
+	{
+		return (! is_null($this->subscription['trial_end']) and $this->subscription['trial_end'] > time())
+			? $this->trialEnd($formatted)
+			: $this->currentEnd($formatted);
+	}
 }

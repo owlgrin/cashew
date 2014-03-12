@@ -5,6 +5,7 @@ use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 
 class StripeGateway implements Gateway {
+
 	public function create($card, $description = '')
 	{
 		try
@@ -37,7 +38,7 @@ class StripeGateway implements Gateway {
 			$subscription = Stripe_Customer::retrieve($customer)
 				->updateSubscription($options);
 
-			return new StripeSubscription($subscription);
+			return new StripeCustomer(Stripe_Customer::retrieve($customer));
 		}
 		catch(Stripe_Error $e)
 		{
@@ -49,65 +50,66 @@ class StripeGateway implements Gateway {
 		}
 	}
 
-	public function updateSubscription($customer, $subscription, $options = array())
+	// public function updateSubscription($customer, $subscription, $options = array())
+	// {
+	// 	try
+	// 	{
+	// 		$subscription = Stripe_Customer::retrieve($customer)->subscriptions->retrieve($subscription);
+
+	// 		foreach($options as $option => $value)
+	// 		{
+	// 			if($value) $subscription->{$option} = $value;
+	// 		}
+
+	// 		return new StripeSubscription($subscription->save());
+	// 	}
+	// 	catch(Stripe_CardError $e)
+	// 	{
+	// 		throw new \Exception($e->getMessage());
+	// 	}
+	// 	catch(Stripe_Error $e)
+	// 	{
+	// 		throw new \Exception($e->getMessage());
+	// 	}
+	// 	catch(\Exception $e)
+	// 	{
+	// 		throw new \Exception($e->getMessage());
+	// 	}
+	// }
+
+	// public function updateCustomer($customer, $options = array())
+	// {
+	// 	try
+	// 	{
+	// 		$customer = Stripe_Customer::retrieve($customer);
+
+	// 		foreach($options as $option => $value)
+	// 		{
+	// 			if($value) $customer->{$option} = $value;
+	// 		}
+
+	// 		return new StripeCustomer($customer->save());
+	// 	}
+	// 	catch(Stripe_CardError $e)
+	// 	{
+	// 		throw new \Exception($e->getMessage());
+	// 	}
+	// 	catch(Stripe_Error $e)
+	// 	{
+	// 		throw new \Exception($e->getMessage());
+	// 	}
+	// 	catch(\Exception $e)
+	// 	{
+	// 		throw new \Exception($e->getMessage());
+	// 	}
+	// }
+
+	public function cancel($customer, $atPeriodEnd = false)
 	{
 		try
 		{
-			$subscription = Stripe_Customer::retrieve($customer)->subscriptions->retrieve($subscription);
-
-			foreach($options as $option => $value)
-			{
-				if($value) $subscription->{$option} = $value;
-			}
-
-			return new StripeSubscription($subscription->save());
-		}
-		catch(Stripe_CardError $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-		catch(Stripe_Error $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
-
-	public function updateCustomer($customer, $options = array())
-	{
-		try
-		{
-			$customer = Stripe_Customer::retrieve($customer);
-
-			foreach($options as $option => $value)
-			{
-				if($value) $customer->{$option} = $value;
-			}
-
-			return new StripeCustomer($customer->save());
-		}
-		catch(Stripe_CardError $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-		catch(Stripe_Error $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
-
-	public function cancel($customer, $subscription)
-	{
-		try
-		{
-			$subscription = Stripe_Customer::retrieve($customer)->subscriptions->retrieve($subscription)->cancel(array('at_period_end' => true));
+			$subscription = Stripe_Customer::retrieve($customer)
+				->cancelSubscription(array('at_period_end' => $atPeriodEnd));
 
 			return new StripeSubscription($subscription);
 		}

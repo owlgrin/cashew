@@ -70,11 +70,64 @@ class Cashew {
 			if( ! $this->subscription) throw new \Exception('No subscription found');
 			if( ! $this->subscription['customer_id']) $this->createCustomer($card, $description);
 
-			$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ?: null);
-			
-			$subscription = $this->gateway->update($this->subscription['customer_id'], $options);
+			$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
 
-			$this->storage->subscribe($this->user, $subscription);
+			$customer = $this->gateway->update($this->subscription['customer_id'], $options);
+
+			$this->storage->subscribe($this->user, $customer->subscription());
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function card($card)
+	{
+		return $this->update(compact('card'));
+	}
+
+	public function toPlan($plan, $prorate = true)
+	{
+		return $this->update(compact('plan', 'prorate'));
+	}
+
+	public function update($options = array())
+	{
+		try
+		{
+			if( ! $this->subscription) throw new \Exception('No subscription found');
+
+			$customer = $this->gateway->update($this->subscription['customer_id'], $options);
+			$this->storage->update($this->user, $customer);
+
+			$this->refreshSubscription();
+
+			return $this;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function canceAtPeriodEnd()
+	{
+		return $this->cancel(true);
+	}
+
+	public function cancel($atPeriodEnd = false)
+	{
+		try
+		{
+			if( ! $this->subscription) throw new \Exception('No subscription found');
+
+			$subscription = $this->gateway->cancel($this->subscription['customer_id'], $atPeriodEnd);
+			$this->storage->cancel($this->user, $subscription);
+
+			$this->refreshSubscription();
+
+			return $this;
 		}
 		catch(\Exception $e)
 		{

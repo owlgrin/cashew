@@ -73,20 +73,17 @@ class DbStorage implements Storage {
 		}
 	}
 
-	public function update(Customer $customer)
+	public function update($userId, Customer $customer)
 	{
 		try
 		{
 			$subscription = $customer->subscription();
 
 			$id = DB::table(Config::get('cashew::table'))
-				->where('customer_id', '=', $customer->id())
+				->where('user_id', '=', $userId)
 				->update(array(
-					'subscription_id' => $subscription->id(),
-					'ends_at' => $subscription->currentEnd(),
 					'plan' => $subscription->plan(),
 					'last_four' => $customer->card()->lastFour(),
-					'status' => $subscription->status(),
 					'updated_at' => DB::raw('now()')
 				));
 
@@ -98,27 +95,27 @@ class DbStorage implements Storage {
 		}
 	}
 
-	public function toPlan($userId, Subscription $subscription)
-	{
-		try
-		{
-			$id = DB::table(Config::get('cashew::table'))
-				->where('user_id', '=', $userId)
-				->where('subscription_id', '=', $subscription->id())
-				->update(array(
-					'ends_at' => $subscription->currentEnd(),
-					'plan' => $subscription->plan(),
-					'status' => $subscription->status(),
-					'updated_at' => DB::raw('now()')
-				));
+	// public function toPlan($userId, Subscription $subscription)
+	// {
+	// 	try
+	// 	{
+	// 		$id = DB::table(Config::get('cashew::table'))
+	// 			->where('user_id', '=', $userId)
+	// 			->where('subscription_id', '=', $subscription->id())
+	// 			->update(array(
+	// 				'ends_at' => $subscription->currentEnd(),
+	// 				'plan' => $subscription->plan(),
+	// 				'status' => $subscription->status(),
+	// 				'updated_at' => DB::raw('now()')
+	// 			));
 
-			return $id;
-		}
-		catch(\PDOException $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
+	// 		return $id;
+	// 	}
+	// 	catch(\PDOException $e)
+	// 	{
+	// 		throw new \Exception($e->getMessage());
+	// 	}
+	// }
 
 	public function cancel($userId, Subscription $subscription)
 	{
@@ -126,10 +123,11 @@ class DbStorage implements Storage {
 		{
 			$id = DB::table(Config::get('cashew::table'))
 				->where('user_id', '=', $userId)
-				->where('subscription_id', '=', $subscription->id())
 				->update(array(
+					'subscription_ends_at' => $subscription->end(),
 					'status' => 'canceled',
-					'updated_at' => DB::raw('now()')
+					'updated_at' => DB::raw('now()'),
+					'canceled_at' => DB::raw('now()')
 				));
 
 			return $id;
