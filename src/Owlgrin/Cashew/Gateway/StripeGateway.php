@@ -104,7 +104,7 @@ class StripeGateway implements Gateway {
 	// 	}
 	// }
 
-	public function cancel($customer, $atPeriodEnd = false)
+	public function cancel($customer, $atPeriodEnd = true)
 	{
 		try
 		{

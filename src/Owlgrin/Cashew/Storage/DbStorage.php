@@ -61,6 +61,7 @@ class DbStorage implements Storage {
 				->where('user_id', '=', $userId)
 				->update(array(
 					'trial_ends_at' => $subscription->trialEnd(),
+					'subscription_ends_at' => null,
 					'plan' => $subscription->plan(),
 					'status' => $subscription->status(),
 					'updated_at' => DB::raw('now()'),

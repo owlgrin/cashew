@@ -111,12 +111,12 @@ class Cashew {
 		}
 	}
 
-	public function cancelAtPeriodEnd()
+	public function cancelNow()
 	{
-		return $this->cancel(true);
+		return $this->cancel(false);
 	}
 
-	public function cancel($atPeriodEnd = false)
+	public function cancel($atPeriodEnd = true)
 	{
 		try
 		{
@@ -135,6 +135,22 @@ class Cashew {
 		}
 	}
 
+	public function resume($options = array())
+	{
+		// if( ! $this->canceled()) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled
+
+		// if new plan passed, then consider it else default to the previous plan
+		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
+		
+		// ending the trial right now
+		$options['trial_end'] = 'now';
+
+		// no prorate
+		$options['prorate'] = false;
+
+		return $this->subscribe(null, '', $options);
+	}
+
 	private function getTrialEnd($days = null)
 	{
 		// special case for ending trial right now
@@ -143,7 +159,7 @@ class Cashew {
 		// if number of days is passed, we will calculate the end based upon it
 		if($days)
 		{
-			return Carbon::today()->addDays($days)->toDateString();
+			return Carbon::today()->addDays($days)->getTimestamp();
 		}
 
 		// otherwise, if there was an ongoing trial, keep that as the trial else null
