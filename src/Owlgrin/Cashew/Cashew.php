@@ -111,7 +111,7 @@ class Cashew {
 		}
 	}
 
-	public function canceAtPeriodEnd()
+	public function cancelAtPeriodEnd()
 	{
 		return $this->cancel(true);
 	}
