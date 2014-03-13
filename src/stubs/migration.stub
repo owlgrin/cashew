@@ -16,6 +16,7 @@ class CreateCashewTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('user_id');
+			$table->boolean('is_super')->default(false);
 			$table->string('customer_id', 51)->nullable()->default(null);
 			$table->string('subscription_id', 51)->nullable()->default(null);
 			$table->dateTime('trial_ends_at')->nullable()->default(null);

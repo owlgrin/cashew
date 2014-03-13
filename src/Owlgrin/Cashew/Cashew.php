@@ -184,12 +184,17 @@ class Cashew {
 
 	public function active()
 	{
-		return $this->onTrial() or $this->onGrace() or $this->subscribed();
+		return $this->isSuper() or $this->onTrial() or $this->onGrace() or $this->subscribed();
 	}
 
 	public function inactive()
 	{
 		return ! $this->active();
+	}
+
+	public function isSuper()
+	{
+		return ((boolean) $this->subscription['is_super']);
 	}
 
 	public function onTrial()
