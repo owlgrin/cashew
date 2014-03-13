@@ -84,12 +84,27 @@ class Cashew {
 
 	public function card($card)
 	{
-		return $this->update(compact('card'));
+		return $this->update(array('plan' => $this->subscription['plan'], 'card' => $card));
 	}
 
 	public function toPlan($plan, $prorate = true)
 	{
 		return $this->update(compact('plan', 'prorate'));
+	}
+
+	public function increment($quantity = 1)
+	{
+		return $this->quantity($this->subscription['quantity'] + $quantity);
+	}
+
+	public function decrement($quantity = 1)
+	{
+		return $this->quantity($this->subscription['quantity'] - $quantity);
+	}
+
+	public function quantity($quantity)
+	{
+		return $this->update(array('plan' => $this->subscription['plan'], 'quantity' => $quantity));
 	}
 
 	public function update($options = array())

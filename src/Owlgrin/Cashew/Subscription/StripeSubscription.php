@@ -27,6 +27,11 @@ class StripeSubscription implements Subscription {
 		return $this->subscription['plan'] ? $this->subscription['plan']['id'] : null;
 	}
 
+	public function quantity()
+	{
+		return $this->subscription['quantity'];
+	}
+
 	public function status()
 	{
 		return $this->subscription['status'];
