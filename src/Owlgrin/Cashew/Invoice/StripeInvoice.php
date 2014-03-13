@@ -20,7 +20,7 @@ class StripeInvoice implements Invoice {
 	public function date($formatted = true)
 	{
 		return $formatted
-			? Carbon\Carbon::createFromTimestamp($this->invoice['date'])->toDateString()
+			? Carbon::createFromTimestamp($this->invoice['date'])->toDateString()
 			: $this->invoice['date'];
 	}
 
@@ -31,7 +31,7 @@ class StripeInvoice implements Invoice {
 
 	public function formattedTotal()
 	{
-		return $this->formatted($this->total());
+		return $this->_formatted($this->total());
 	}
 
 	public function subtotal()
@@ -61,6 +61,6 @@ class StripeInvoice implements Invoice {
 
 	private function _formatted($amount)
 	{
-		return round(money_format('%i', $amount), 2);
+		return number_format(round(money_format('%i', $amount), 2), 2);
 	}
 }

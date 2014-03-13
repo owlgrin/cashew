@@ -1,6 +1,6 @@
 <?php namespace Owlgrin\Cashew\Gateway;
 
-use Stripe_Customer, Stripe_CardError, Stripe_Error;
+use Stripe_Customer, Stripe_Invoice, Stripe_CardError, Stripe_Error;
 use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 use Owlgrin\Cashew\Invoice\StripeInvoice;
@@ -83,6 +83,24 @@ class StripeGateway implements Gateway {
 			}
 
 			return $invoices;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}	
+	}
+
+	public function nextInvoice($customer)
+	{
+		try
+		{
+			$invoice = Stripe_Invoice::upcoming(compact('customer'));
+
+			return new StripeInvoice($invoice);
 		}
 		catch(Stripe_Error $e)
 		{

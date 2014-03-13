@@ -182,6 +182,20 @@ class Cashew {
 		}
 	}
 
+	public function nextInvoice()
+	{
+		try
+		{
+			if( ! $this->subscription) throw new \Exception('No subscription found');
+
+			return $this->gateway->nextInvoice($this->subscription['customer_id']);
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
 	public function active()
 	{
 		return $this->isSuper() or $this->onTrial() or $this->onGrace() or $this->subscribed();
