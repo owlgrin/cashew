@@ -168,6 +168,22 @@ class Cashew {
 		return $this->subscribe(null, '', $options);
 	}
 
+	public function invoices($count = 10)
+	{
+		try
+		{
+			if( ! $this->subscription) throw new \Exception('No subscription found');
+
+			$invoices = $this->gateway->invoices($this->subscription['customer_id'], $count);
+
+			return $invoices;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
 	public function active()
 	{
 		return $this->onTrial() or $this->onGrace() or $this->subscribed();
