@@ -7,5 +7,5 @@ return array(
 	),
 	'plan' => 'default',
 	'table' => '_cashew',
-	'multiple' => false,
+	'trial' => 30
 );
