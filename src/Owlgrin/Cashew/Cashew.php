@@ -151,6 +151,16 @@ class Cashew {
 		return $this->subscribe(null, '', $options);
 	}
 
+	public function active()
+	{
+		return $this->onTrial() or $this->onGrace() or $this->subscribed();
+	}
+
+	public function inactive()
+	{
+		return ! $this->active();
+	}
+
 	public function onTrial()
 	{
 		if( ! $this->subscription) throw new \Exception('No subscription found');
@@ -168,7 +178,7 @@ class Cashew {
 		if(is_null($this->subscription['subscription_ends_at'])) return false;
 
 		return $this->subscription['status'] == self::STATUS_CANCEL
-				and Carbon::today()->lt(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['ends_at']));
+				and Carbon::today()->lt(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['subscription_ends_at']));
 	}
 
 	public function expired()
