@@ -174,9 +174,7 @@ class Cashew {
 		{
 			if( ! $this->subscription) throw new \Exception('No subscription found');
 
-			$invoices = $this->gateway->invoices($this->subscription['customer_id'], $count);
-
-			return $invoices;
+			return $this->gateway->invoices($this->subscription['customer_id'], $count);
 		}
 		catch(\Exception $e)
 		{
