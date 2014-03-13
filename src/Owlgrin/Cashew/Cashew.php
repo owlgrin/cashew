@@ -87,9 +87,11 @@ class Cashew {
 		return $this->update(array('plan' => $this->subscription['plan'], 'card' => $card));
 	}
 
-	public function toPlan($plan, $prorate = true)
+	public function toPlan($plan, $prorate = true, $maintainTrial = true)
 	{
-		return $this->update(array('plan' => $plan, 'prorate' => $prorate, 'quantity' => $this->subscription['quantity']));
+		$trialEnd = $this->onTrial() ? $this->getTrialEnd() : null;
+		
+		return $this->update(array('plan' => $plan, 'trial_end' => $trialEnd, 'prorate' => $prorate, 'quantity' => $this->subscription['quantity']));
 	}
 
 	public function increment($quantity = 1)
