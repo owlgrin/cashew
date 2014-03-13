@@ -60,6 +60,7 @@ class DbStorage implements Storage {
 			DB::table(Config::get('cashew::table'))
 				->where('user_id', '=', $userId)
 				->update(array(
+					'subscription_id' => $subscription->id(),
 					'trial_ends_at' => $subscription->trialEnd(),
 					'subscription_ends_at' => null,
 					'plan' => $subscription->plan(),
@@ -84,6 +85,7 @@ class DbStorage implements Storage {
 			$id = DB::table(Config::get('cashew::table'))
 				->where('user_id', '=', $userId)
 				->update(array(
+					'subscription_id' => $subscription->id(),
 					'trial_ends_at' => $subscription->trialEnd(),
 					'plan' => $subscription->plan(),
 					'quantity' => $subscription->quantity(),
