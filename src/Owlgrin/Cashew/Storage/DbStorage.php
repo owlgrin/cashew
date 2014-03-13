@@ -96,28 +96,6 @@ class DbStorage implements Storage {
 		}
 	}
 
-	// public function toPlan($userId, Subscription $subscription)
-	// {
-	// 	try
-	// 	{
-	// 		$id = DB::table(Config::get('cashew::table'))
-	// 			->where('user_id', '=', $userId)
-	// 			->where('subscription_id', '=', $subscription->id())
-	// 			->update(array(
-	// 				'ends_at' => $subscription->currentEnd(),
-	// 				'plan' => $subscription->plan(),
-	// 				'status' => $subscription->status(),
-	// 				'updated_at' => DB::raw('now()')
-	// 			));
-
-	// 		return $id;
-	// 	}
-	// 	catch(\PDOException $e)
-	// 	{
-	// 		throw new \Exception($e->getMessage());
-	// 	}
-	// }
-
 	public function cancel($userId, Subscription $subscription)
 	{
 		try
@@ -138,25 +116,6 @@ class DbStorage implements Storage {
 			throw new \Exception($e->getMessage());
 		}
 	}
-
-	// public function reactivate($userId, Subscription $subscription)
-	// {
-	// 	try
-	// 	{
-	// 		DB::table(Config::get('cashew::table'))
-	// 			->where('user_id', '=', $userId)
-	// 			->where('subscription_id', '=', $subscription->id())
-	// 			->update(array(
-	// 				'ends_at' => $subscription->currentEnd(),
-	// 				'plan' => $subscription->plan(),
-	// 				'status' => $subscription->status(),
-	// 				'updated_at' => DB::raw('now()')
-	// 			));
-	// 	}
-	// 	catch (\Exception $e) {
-	// 		throw new \Exception($e->getMessage());	
-	// 	}
-	// }
 
 	private function subscriptionByUser($userId)
 	{

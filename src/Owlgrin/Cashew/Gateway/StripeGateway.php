@@ -50,60 +50,6 @@ class StripeGateway implements Gateway {
 		}
 	}
 
-	// public function updateSubscription($customer, $subscription, $options = array())
-	// {
-	// 	try
-	// 	{
-	// 		$subscription = Stripe_Customer::retrieve($customer)->subscriptions->retrieve($subscription);
-
-	// 		foreach($options as $option => $value)
-	// 		{
-	// 			if($value) $subscription->{$option} = $value;
-	// 		}
-
-	// 		return new StripeSubscription($subscription->save());
-	// 	}
-	// 	catch(Stripe_CardError $e)
-	// 	{
-	// 		throw new \Exception($e->getMessage());
-	// 	}
-	// 	catch(Stripe_Error $e)
-	// 	{
-	// 		throw new \Exception($e->getMessage());
-	// 	}
-	// 	catch(\Exception $e)
-	// 	{
-	// 		throw new \Exception($e->getMessage());
-	// 	}
-	// }
-
-	// public function updateCustomer($customer, $options = array())
-	// {
-	// 	try
-	// 	{
-	// 		$customer = Stripe_Customer::retrieve($customer);
-
-	// 		foreach($options as $option => $value)
-	// 		{
-	// 			if($value) $customer->{$option} = $value;
-	// 		}
-
-	// 		return new StripeCustomer($customer->save());
-	// 	}
-	// 	catch(Stripe_CardError $e)
-	// 	{
-	// 		throw new \Exception($e->getMessage());
-	// 	}
-	// 	catch(Stripe_Error $e)
-	// 	{
-	// 		throw new \Exception($e->getMessage());
-	// 	}
-	// 	catch(\Exception $e)
-	// 	{
-	// 		throw new \Exception($e->getMessage());
-	// 	}
-	// }
-
 	public function cancel($customer, $atPeriodEnd = true)
 	{
 		try

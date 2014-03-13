@@ -9,7 +9,5 @@ interface Storage {
 	public function customer($userId, Customer $customer);
 	public function subscribe($userId, Subscription $subscription);
 	public function update($userId, Customer $customer);
-	// public function toPlan($userId, Subscription $subscription);
 	public function cancel($userId, Subscription $subscription);
-	// public function reactivate($userId, Subscription $subscription);
 }
