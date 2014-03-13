@@ -51,7 +51,7 @@ class Cashew {
 		{
 			if($this->storage->subscription($id)) throw new \Exception('Customer already exist');
 
-			$this->storage->create($id, $this->getTrialEnd($trialDays));
+			$this->storage->create($id, $this->getTrialEnd($trialDays, true));
 
 			$this->user($id); // for further usage
 
@@ -226,7 +226,7 @@ class Cashew {
 		return $this->subscription['plan'] == $plan;
 	}
 
-	private function getTrialEnd($days = null)
+	private function getTrialEnd($days = null, $formatted = false)
 	{
 		// special case for ending trial right now
 		if($days == 'now') return $days;
@@ -234,7 +234,9 @@ class Cashew {
 		// if number of days is passed, we will calculate the end based upon it
 		if($days)
 		{
-			return Carbon::today()->addDays($days)->getTimestamp();
+			return $formatted
+				? Carbon::today()->addDays($days)->toDateString()
+				: Carbon::today()->addDays($days)->getTimestamp();
 		}
 
 		// otherwise, if there was an ongoing trial, keep that as the trial else null
@@ -242,9 +244,13 @@ class Cashew {
 		{
 			if( ! $this->subscription) return null; // if no previous subsccription
 
-			return $this->subscription['trial_ends_at'] // if there's trial end in previous subscription
-				? Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at'])->getTimestamp()
-				: null;
+			if($this->subscription['trial_ends_at']) // if there's trial end in previous subscription
+			{
+				return $formatted
+					? $this->subscription['trial_ends_at']
+					: Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at'])->getTimestamp();
+			}
+			else return null;
 		}
 	}
 
