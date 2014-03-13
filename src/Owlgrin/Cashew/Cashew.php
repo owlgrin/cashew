@@ -89,7 +89,7 @@ class Cashew {
 
 	public function toPlan($plan, $prorate = true)
 	{
-		return $this->update(compact('plan', 'prorate'));
+		return $this->update(array('plan' => $plan, 'prorate' => $prorate, 'quantity' => $this->subscription['quantity']));
 	}
 
 	public function increment($quantity = 1)
