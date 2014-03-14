@@ -2,7 +2,7 @@
 
 use Owlgrin\Cashew\Hooks\Hook;
 use Owlgrin\Cashew\Events\Event;
-use Owlgrin\Cashew\Cashew;
+use Owlgrin\Cashew\CashewFacade as Cashew;
 
 class InvoiceFailHook implements Hook {
 

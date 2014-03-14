@@ -1,6 +1,6 @@
 <?php namespace Owlgrin\Cashew\Gateway;
 
-use Stripe_Customer, Stripe_Invoice, Stripe_CardError, Stripe_Error;
+use Stripe_Customer, Stripe_Invoice, Stripe_Event, Stripe_CardError, Stripe_Error;
 use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 use Owlgrin\Cashew\Invoice\StripeInvoice;

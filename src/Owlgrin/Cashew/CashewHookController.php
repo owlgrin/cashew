@@ -8,6 +8,13 @@ use App;
 
 class CashewHookController extends Controller {
 
+	protected $gateway;
+
+	public function __construct(Gateway $gateway)
+	{
+		$this->gateway = $gateway;
+	}
+
 	private $hooks = array(
 		'invoice.payment_failed' => 'InvoiceFailHook',
 		'invoice.payment_succeeded' => 'InvoiceSuccessHook'
@@ -15,17 +22,26 @@ class CashewHookController extends Controller {
 
 	public function handle()
 	{
-		$payload = $this->getPayload();
+		try
+		{
+			$payload = $this->getPayload();
 
-		$event = $this->gateway->event($payload['id']);
-		$hook = $this->getHook($event['type']);
+			$event = $this->gateway->event($payload['id']);
+			$hook = $this->getHook($event->type());
 
-		$hook->handle($event);
+			$hook->handle($event);
+
+			return Response::make('Hook handled successfully', 200);
+		}
+		catch(\Exception $e)
+		{
+			return Response::make('Hook handled unsuccessfully', 400);
+		}
 	}
 
-	protected getHook($type)
+	protected function getHook($type)
 	{
-		return App::make($this->hooks[$type]);
+		return App::make('Owlgrin\Cashew\Hooks\\' . $this->hooks[$type]);
 	}
 
 	protected function getPayload()

@@ -16,6 +16,11 @@ class StripeEvent implements Event {
 		return $this->event;
 	}
 
+	public function type()
+	{
+		return $this->event['type'];
+	}
+
 	public function customer()
 	{
 		return $this->event['data']['object']['customer'] ?: null;
