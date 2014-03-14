@@ -1,6 +1,7 @@
-<?php namespace Owlgrin\Cashew\Events;
+<?php namespace Owlgrin\Cashew\Event;
 
 use Owlgrin\Cashew\Events\Event;
+use Owlgrin\Cashew\Invoice\StripeInvoice;
 
 class StripeEvent implements Event {
 	
@@ -24,6 +25,13 @@ class StripeEvent implements Event {
 	public function customer()
 	{
 		return $this->event['data']['object']['customer'] ?: null;
+	}
+
+	public function invoice()
+	{
+		if( ! starts_with($this->type(), 'invoice.')) throw new \Exception('Uncompatible type');
+
+		return new StripeInvoice($this->event['data']['object']);
 	}
 
 	public function attempts()
