@@ -35,7 +35,7 @@ class CashewHookController extends Controller {
 		}
 		catch(\Exception $e)
 		{
-			return Response::make('Hook handled unsuccessfully', 400);
+			return Response::make('Hook handled unsuccessfully: ' . $e->getMessage(), 400);
 		}
 	}
 
