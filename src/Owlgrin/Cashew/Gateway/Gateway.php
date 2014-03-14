@@ -6,4 +6,5 @@ interface Gateway {
 	public function cancel($customer, $subscription);
 	public function invoices($customer);
 	public function nextInvoice($customer);
+	public function event($event);
 }

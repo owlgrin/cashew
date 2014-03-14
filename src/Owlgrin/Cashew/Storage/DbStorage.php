@@ -8,11 +8,11 @@ use Carbon\Carbon, Config, DB;
 
 class DbStorage implements Storage {
 	
-	public function subscription($id)
+	public function subscription($id, $byCustomer = false)
 	{
 		if( ! $id) throw new \Exception('Cannot fetch subscription');
 		
-		return $this->subscriptionByUser($id);
+		return $byCustomer ? $this->subscriptionByCustomer($id) : $this->subscriptionByUser($id);
 	}
 
 	public function create($userId, $trialEnd = null)
@@ -113,6 +113,26 @@ class DbStorage implements Storage {
 					'status' => 'canceled',
 					'updated_at' => DB::raw('now()'),
 					'canceled_at' => DB::raw('now()')
+				));
+
+			return $id;
+		}
+		catch(\PDOException $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function expire($userId)
+	{
+		try
+		{
+			$id = DB::table(Config::get('cashew::table'))
+				->where('user_id', '=', $userId)
+				->update(array(
+					'status' => 'expired',
+					'updated_at' => DB::raw('now()'),
+					'expired_at' => DB::raw('now()')
 				));
 
 			return $id;

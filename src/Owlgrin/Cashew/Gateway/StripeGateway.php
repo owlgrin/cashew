@@ -4,6 +4,7 @@ use Stripe_Customer, Stripe_Invoice, Stripe_CardError, Stripe_Error;
 use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 use Owlgrin\Cashew\Invoice\StripeInvoice;
+use Owlgrin\Cashew\Event\StripeEvent;
 
 class StripeGateway implements Gateway {
 
@@ -101,6 +102,24 @@ class StripeGateway implements Gateway {
 			$invoice = Stripe_Invoice::upcoming(compact('customer'));
 
 			return new StripeInvoice($invoice);
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}	
+	}
+
+	public function event($event)
+	{
+		try
+		{
+			$event = Stripe_Event::retrieve($event);
+
+			return new StripeEvent($event);
 		}
 		catch(Stripe_Error $e)
 		{

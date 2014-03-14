@@ -128,6 +128,36 @@ class Cashew {
 		}
 	}
 
+	public function expire()
+	{
+		try
+		{
+			$this->cancelNow();
+			$this->storage->expire($this->user);
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function expireCustomer($customerId)
+	{
+		try
+		{
+			// set the subscription by user
+			$subscription = $this->storage->subscription($customerId, true);
+			$this->user($subscription['user_id']);
+
+			$this->cancelNow();
+			$this->storage->expire($this->user);
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
 	public function cancelNow()
 	{
 		return $this->cancel(false);
