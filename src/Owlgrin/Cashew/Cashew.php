@@ -182,7 +182,7 @@ class Cashew {
 		}
 	}
 
-	public function resume($options = array())
+	public function resume($options = array(), $card = null)
 	{
 		if( ! $this->canceled()) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled
 
@@ -195,7 +195,7 @@ class Cashew {
 		// no prorate
 		$options['prorate'] = false;
 
-		return $this->subscribe(null, '', $options);
+		return $this->subscribe($card, '', $options);
 	}
 
 	public function invoices($count = 10)
