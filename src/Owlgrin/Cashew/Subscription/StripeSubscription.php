@@ -19,26 +19,27 @@ class StripeSubscription implements Subscription {
 
 	public function id()
 	{
-		return $this->subscription['id'];
+		return $this->subscription ? $this->subscription['id'] : null;
 	}
 
 	public function plan()
 	{
-		return $this->subscription['plan'] ? $this->subscription['plan']['id'] : null;
+		return $this->subscription ? $this->subscription['plan']['id'] : null;
 	}
 
 	public function quantity()
 	{
-		return $this->subscription['quantity'];
+		return $this->subscription ? $this->subscription['quantity'] : null;
 	}
 
 	public function status()
 	{
-		return $this->subscription['status'];
+		return $this->subscription ? $this->subscription['status'] : null;
 	}
 
 	public function trialEnd($formatted = true)
 	{
+		if( ! $this->subscription) return null;
 		if(is_null($this->subscription['trial_end'])) return null;
 
 		return $formatted
@@ -48,6 +49,7 @@ class StripeSubscription implements Subscription {
 
 	public function currentEnd($formatted = true)
 	{
+		if( ! $this->subscription) return null;
 		if(is_null($this->subscription['current_period_end'])) return null;
 
 		return $formatted
@@ -57,6 +59,7 @@ class StripeSubscription implements Subscription {
 
 	public function end($formatted = true)
 	{
+		if( ! $this->subscription) return null;
 		return (! is_null($this->subscription['trial_end']) and $this->subscription['trial_end'] > time())
 			? $this->trialEnd($formatted)
 			: $this->currentEnd($formatted);

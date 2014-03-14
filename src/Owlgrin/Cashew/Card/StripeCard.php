@@ -18,6 +18,6 @@ class StripeCard implements Card {
 
 	public function lastFour()
 	{
-		return $this->card['last4'];
+		return $this->card ? $this->card['last4'] : null;
 	}
 }

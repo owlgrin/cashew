@@ -8,14 +8,11 @@ use Owlgrin\Cashew\Event\StripeEvent;
 
 class StripeGateway implements Gateway {
 
-	public function create($card, $description = '')
+	public function create($options)
 	{
 		try
 		{
-			$customer = Stripe_Customer::create(array(
-				'card' => $card,
-				'description' => $description
-			));
+			$customer = Stripe_Customer::create($options);
 
 			return new StripeCustomer($customer);
 		}

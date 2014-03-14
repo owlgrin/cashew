@@ -15,14 +15,19 @@ class DbStorage implements Storage {
 		return $byCustomer ? $this->subscriptionByCustomer($id) : $this->subscriptionByUser($id);
 	}
 
-	public function create($userId, $trialEnd = null)
+	public function create($userId, Customer $customer)
 	{
 		try
 		{
 			$id = DB::table(Config::get('cashew::table'))->insertGetId(array(
 				'user_id' => $userId,
-				'trial_ends_at' => $trialEnd,
-				'status' => 'trialing',
+				'customer_id' => $customer->id(),
+				'subscription_id' => $customer->subscription()->id(),
+				'trial_ends_at' => $customer->subscription()->trialEnd(),
+				'plan' => $customer->subscription()->plan(),
+				'quantity' => $customer->subscription()->quantity(),
+				'last_four' => $customer->card()->lastFour(),
+				'status' => $customer->subscription()->status(),
 				'created_at' => DB::raw('now()'),
 				'updated_at' => DB::raw('now()')
 			));
@@ -87,11 +92,31 @@ class DbStorage implements Storage {
 				->update(array(
 					'subscription_id' => $subscription->id(),
 					'trial_ends_at' => $subscription->trialEnd(),
+					'subscription_ends_at' => $subscription->currentEnd(),
 					'plan' => $subscription->plan(),
 					'quantity' => $subscription->quantity(),
 					'last_four' => $customer->card()->lastFour(),
 					'status' => $subscription->status(),
 					'updated_at' => DB::raw('now()')
+				));
+
+			return $id;
+		}
+		catch(\PDOException $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function resume($userId)
+	{
+		try
+		{
+			$id = DB::table(Config::get('cashew::table'))
+				->where('user_id', '=', $userId)
+				->update(array(
+					'subscription_ends_at' => null,
+					'canceled_at' => null,
 				));
 
 			return $id;

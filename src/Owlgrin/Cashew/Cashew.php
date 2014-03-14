@@ -45,36 +45,19 @@ class Cashew {
 		return $this->subscription;
 	}
 
-	public function create($id, $trialDays = null)
+	public function create($id, $options)
 	{
 		try
 		{
 			if($this->storage->subscription($id)) throw new \Exception('Customer already exist');
 
-			$this->storage->create($id, $this->getTrialEnd($trialDays, true));
+			$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
+			$customer = $this->gateway->create($options);
+			$this->storage->create($id, $customer);
 
 			$this->user($id); // for further usage
 
 			return $this;
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-	}
-
-	public function subscribe($card, $description = '', $options)
-	{
-		try
-		{
-			if( ! $this->subscription) throw new \Exception('No subscription found');
-			if( ! $this->subscription['customer_id']) $this->createCustomer($card, $description);
-
-			$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
-
-			$customer = $this->gateway->update($this->subscription['customer_id'], $options);
-
-			$this->storage->subscribe($this->user, $customer->subscription());
 		}
 		catch(\Exception $e)
 		{
@@ -190,12 +173,21 @@ class Cashew {
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
 		
 		// ending the trial right now
-		$options['trial_end'] = 'now';
+		$options['trial_end'] = $this->getTrialEnd();
 
 		// no prorate
 		$options['prorate'] = false;
 
-		return $this->subscribe($card, '', $options);
+		try
+		{
+			$this->update(array_merge($options, compact('card')));
+
+			$this->storage->resume($this->user);
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
 	}
 
 	public function invoices($count = 10)
