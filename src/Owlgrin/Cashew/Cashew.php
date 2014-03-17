@@ -173,16 +173,14 @@ class Cashew {
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
 		
 		// ending the trial right now
-		$options['trial_end'] = $this->getTrialEnd();
+		$options['trial_end'] = ;
 
 		// no prorate
 		$options['prorate'] = false;
 
 		try
 		{
-			$this->update(array_merge($options, compact('card')));
-
-			$this->storage->resume($this->user);
+			$this->update(e->resume($this->user);
 		}
 		catch(\Exception $e)
 		{
@@ -285,7 +283,7 @@ class Cashew {
 		return $this->subscription['plan'] == $plan;
 	}
 
-	private function getTrialEnd($days = null, $formatted = false)
+	private function getTrialEnd($days = null)
 	{
 		// special case for ending trial right now
 		if($days == 'now') return $days;
@@ -293,9 +291,7 @@ class Cashew {
 		// if number of days is passed, we will calculate the end based upon it
 		if($days)
 		{
-			return $formatted
-				? Carbon::today()->addDays($days)->toDateString()
-				: Carbon::today()->addDays($days)->getTimestamp();
+			return Carbon::today()->addDays($days)->getTimestamp();
 		}
 
 		// otherwise, if there was an ongoing trial, keep that as the trial else null
@@ -305,9 +301,7 @@ class Cashew {
 
 			if($this->subscription['trial_ends_at']) // if there's trial end in previous subscription
 			{
-				return $formatted
-					? $this->subscription['trial_ends_at']
-					: Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at'])->getTimestamp();
+				return Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at'])->getTimestamp();
 			}
 			else return null;
 		}
