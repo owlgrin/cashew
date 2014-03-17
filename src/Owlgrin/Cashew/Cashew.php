@@ -173,14 +173,16 @@ class Cashew {
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
 		
 		// ending the trial right now
-		$options['trial_end'] = 'now';
+		$options['trial_end'] = $this->getTrialE;
 
 		// no prorate
 		$options['prorate'] = false;
 
 		try
 		{
-			$this->update(e->resume($this->user);
+			$this->update(array_merge($options, compact('card')));
+
+			$this->storage->resume($this->user);
 		}
 		catch(\Exception $e)
 		{
@@ -224,6 +226,11 @@ class Cashew {
 	public function inactive()
 	{
 		return ! $this->active();
+	}
+
+	public function isSuper()
+	{
+		return ((boolean) $this->subscription['is_super']);
 	}
 
 	public function hasCard()
@@ -299,21 +306,6 @@ class Cashew {
 				return Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at'])->getTimestamp();
 			}
 			else return null;
-		}
-	}
-
-	private function createCustomer($card, $description)
-	{
-		try
-		{
-			$customer = $this->gateway->create($card, $description);
-			$this->storage->customer($this->user, $customer);
-
-			$this->refreshSubscription();
-		}
-		catch(\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
 		}
 	}
 }
