@@ -173,7 +173,7 @@ class Cashew {
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
 		
 		// ending the trial right now
-		$options['trial_end'] = ;
+		$options['trial_end'] = 'now';
 
 		// no prorate
 		$options['prorate'] = false;
