@@ -244,8 +244,7 @@ class Cashew {
 
 		if(is_null($this->subscription['trial_ends_at'])) return false;
 
-		return $this->subscription['status'] == self::STATUS_TRIAL
-				and Carbon::today()->lt(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['trial_ends_at']));
+		return $this->subscription['status'] == self::STATUS_TRIAL;
 	}
 
 	public function onGrace()
