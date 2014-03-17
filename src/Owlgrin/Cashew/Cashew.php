@@ -233,6 +233,11 @@ class Cashew {
 		return ((boolean) $this->subscription['is_super']);
 	}
 
+	public function hasCard()
+	{
+		return is_null($this->subscription['last_four']) ? false : true;
+	}
+
 	public function onTrial()
 	{
 		if( ! $this->subscription) throw new \Exception('No subscription found');
