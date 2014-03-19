@@ -92,7 +92,7 @@ class DbStorage implements Storage {
 				->update(array(
 					'subscription_id' => $subscription->id(),
 					'trial_ends_at' => $subscription->trialEnd(),
-					'subscription_ends_at' => $subscription->currentEnd(),
+					'subscription_ends_at' => null, // null because update should never be used to stop the subscription
 					'plan' => $subscription->plan(),
 					'quantity' => $subscription->quantity(),
 					'last_four' => $customer->card()->lastFour(),
