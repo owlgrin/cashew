@@ -218,6 +218,11 @@ class Cashew {
 		}
 	}
 
+	public function status()
+	{
+		return $this->subscription['status'];
+	}
+
 	public function active()
 	{
 		return $this->isSuper() or $this->onTrial() or $this->onGrace() or $this->subscribed();
@@ -244,7 +249,7 @@ class Cashew {
 
 		if(is_null($this->subscription['trial_ends_at'])) return false;
 
-		return $this->subscription['status'] == self::STATUS_TRIAL;
+		return $this->status() == self::STATUS_TRIAL;
 	}
 
 	public function onGrace()
@@ -253,7 +258,7 @@ class Cashew {
 
 		if(is_null($this->subscription['subscription_ends_at'])) return false;
 
-		return $this->subscription['status'] == self::STATUS_CANCEL
+		return $this->status() == self::STATUS_CANCEL
 				and Carbon::today()->lt(Carbon::createFromFormat('Y-m-d H:i:s', $this->subscription['subscription_ends_at']));
 	}
 
@@ -261,21 +266,21 @@ class Cashew {
 	{
 		if( ! $this->subscription) throw new \Exception('No subscription found');
 
-		return $this->subscription['status'] == self::STATUS_EXPIRE;
+		return $this->status() == self::STATUS_EXPIRE;
 	}
 
 	public function subscribed()
 	{
 		if( ! $this->subscription) throw new \Exception('No subscription found');
 
-		return $this->subscription['status'] == self::STATUS_ACTIVE;
+		return $this->status() == self::STATUS_ACTIVE;
 	}
 
 	public function canceled()
 	{
 		if( ! $this->subscription) throw new \Exception('No subscription found');
 
-		return $this->subscription['status'] == self::STATUS_CANCEL;
+		return $this->status() == self::STATUS_CANCEL;
 	}
 
 	public function onPlan($plan)
