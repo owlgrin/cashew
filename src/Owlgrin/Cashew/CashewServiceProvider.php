@@ -30,7 +30,7 @@ class CashewServiceProvider extends ServiceProvider {
 
 		$this->app->bindShared('command.cashew.table', function($app)
 		{
-			return new \Owlgrin\Cashew\CashewTableCommand;
+			return new \Owlgrin\Cashew\Commands\CashewTableCommand;
 		});
 
 		$this->commands('command.cashew.table');

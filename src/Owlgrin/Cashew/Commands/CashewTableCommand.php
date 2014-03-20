@@ -1,4 +1,4 @@
-<?php namespace Owlgrin\Cashew;
+<?php namespace Owlgrin\Cashew\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
