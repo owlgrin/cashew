@@ -168,13 +168,13 @@ class Cashew {
 
 	public function resume($options = array(), $card = null)
 	{
-		if( ! $this->canceled()) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled
+		if( ! $this->canceled() and ! $this->expired()) throw new \Exception('Cannot be reactivated'); // cannot reactivate if not canceled and not expired
 
 		// if new plan passed, then consider it else default to the previous plan
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
 		
 		// ending the trial right now
-		$options['trial_end'] = $this->getTrialEnd();
+		$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
 
 		// no prorate
 		$options['prorate'] = false;
