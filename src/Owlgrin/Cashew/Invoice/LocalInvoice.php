@@ -1,32 +1,30 @@
 <?php namespace Owlgrin\Cashew\Invoice;
 
 use Owlgrin\Cashew\Invoice\Invoice;
-use Owlgrin\Cashew\Invoice\StorableInvoice;
-use App, Carbon\Carbon;
+use Carbon\Carbon;
 
-class StripeInvoice implements Invoice, StorableInvoice {
+class LocalInvoice implements Invoice {
 
 	protected $invoice;
 
 	public function __construct($invoice)
 	{
-		$this->storage = App::make('Owlgrin\Cashew\Storage\Storage');
 		$this->invoice = $invoice;
 	}
 
 	public function id()
 	{
-		return $this->invoice['id'];
+		return $this->invoice['invoice_id'];
 	}
 
 	public function customerId()
 	{
-		return $this->invoice['customer'];
+		return $this->invoice['customer_id'];
 	}
 
 	public function subscriptionId()
 	{
-		return $this->invoice['subscription'];
+		return $this->invoice['subscription_id'];
 	}
 
 	public function currency()
@@ -37,27 +35,27 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	public function date($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->invoice['date'])->toDateString()
-			: $this->invoice['date'];
+			? $this->invoice['date']
+			: Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['date'])->getTimestamp();
 	}
 
 	public function periodStart($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->invoice['period_start'])->toDateString()
-			: $this->invoice['period_start'];
+			? $this->invoice['period_start']
+			: Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['period_start'])->getTimestamp();
 	}
 
 	public function periodEnd($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->invoice['period_end'])->toDateString()
-			: $this->invoice['period_end'];
+			? $this->invoice['period_end']
+			: Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['period_end'])->getTimestamp();
 	}
 
 	public function total()
 	{
-		return number_format($this->invoice['total'] / 100, 2);
+		return number_format($this->invoice['total'], 2);
 	}
 
 	public function formattedTotal()
@@ -67,7 +65,7 @@ class StripeInvoice implements Invoice, StorableInvoice {
 
 	public function subtotal()
 	{
-		return number_format($this->invoice['subtotal'] / 100, 2);
+		return number_format($this->invoice['subtotal'], 2);
 	}
 
 	public function formattedSubtotal()
@@ -88,11 +86,6 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	public function formattedDiscount()
 	{
 		return $this->_formatted($this->discount());
-	}
-
-	public function store($userId)
-	{
-		$this->storage->storeInvoice($userId, $this);
 	}
 
 	private function _formatted($amount)

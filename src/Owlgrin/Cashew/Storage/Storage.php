@@ -2,6 +2,7 @@
 
 use Owlgrin\Cashew\Customer\Customer;
 use Owlgrin\Cashew\Subscription\Subscription;
+use Owlgrin\Cashew\Invoice\Invoice;
 
 interface Storage {
 	public function subscription($id, $byCustomer);
@@ -12,4 +13,6 @@ interface Storage {
 	public function cancel($userId, Subscription $subscription);
 	public function resume($userId);
 	public function expire($userId);
+	public function storeInvoice($userId, Invoice $invoice);
+	public function getInvoices($userId, $count);
 }

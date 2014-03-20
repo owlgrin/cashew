@@ -1,6 +1,6 @@
 <?php namespace Owlgrin\Cashew\Event;
 
-use Owlgrin\Cashew\Events\Event;
+use Owlgrin\Cashew\Event\Event;
 use Owlgrin\Cashew\Invoice\StripeInvoice;
 
 class StripeEvent implements Event {

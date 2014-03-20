@@ -3,6 +3,8 @@
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Customer\Customer;
 use Owlgrin\Cashew\Subscription\Subscription;
+use Owlgrin\Cashew\Invoice\Invoice;
+use Owlgrin\Cashew\Invoice\LocalInvoice;
 use Owlgrin\Cashew\Card\Card;
 use Carbon\Carbon, Config, DB;
 
@@ -161,6 +163,58 @@ class DbStorage implements Storage {
 				));
 
 			return $id;
+		}
+		catch(\PDOException $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function storeInvoice($userId, Invoice $invoice)
+	{
+		try
+		{
+			$id = DB::table('_cashew_invoices') // replace with Config::get('cashew::table.invoices')
+				->insertGetId(array(
+					'user_id' => $userId,
+					'customer_id' => $invoice->customerId(),
+					'subscription_id' => $invoice->subscriptionId(),
+					'invoice_id' => $invoice->id(),
+					'currency' => $invoice->currency(),
+					'date' => $invoice->date(),
+					'period_start' => $invoice->periodStart(),
+					'period_end' => $invoice->periodEnd(),
+					'total' => $invoice->total(),
+					'subtotal' => $invoice->subtotal(),
+					'discount' => $invoice->discount(),
+					'created_at' => DB::raw('now()'),
+					'updated_at' => DB::raw('now()')
+				));
+
+			return $id;
+		}
+		catch(\PDOException $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	public function getInvoices($userId, $count = 10)
+	{
+		try
+		{
+			$invoices = DB::table('_cashew_invoices')
+				->where('user_id', $userId)
+				->take($count)
+				->orderBy('created_at', 'DESC')
+				->get();
+
+			foreach($invoices as $index => $invoice)
+			{
+				$invoices[$index] = new LocalInvoice($invoice);
+			}
+
+			return $invoices;
 		}
 		catch(\PDOException $e)
 		{

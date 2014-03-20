@@ -1,6 +1,9 @@
 <?php namespace Owlgrin\Cashew\Invoice;
 
 interface Invoice {
+	public function id();
+	public function customerId();
+	public function subscriptionId();
 	public function currency();
 	public function date($formatted);
 	public function periodStart($formatted);

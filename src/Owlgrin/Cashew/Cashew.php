@@ -151,6 +151,7 @@ class Cashew {
 		try
 		{
 			if( ! $this->subscription) throw new \Exception('No subscription found');
+			if($this->canceled()) throw new \Exception('Already canceled');
 
 			$subscription = $this->gateway->cancel($this->subscription['customer_id'], $atPeriodEnd);
 			$this->storage->cancel($this->user, $subscription);
@@ -173,7 +174,7 @@ class Cashew {
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
 		
 		// ending the trial right now
-		$options['trial_end'] = $this->getTrialE;
+		$options['trial_end'] = $this->getTrialEnd();
 
 		// no prorate
 		$options['prorate'] = false;
@@ -190,13 +191,15 @@ class Cashew {
 		}
 	}
 
-	public function invoices($count = 10)
+	public function invoices($fromLocal = true, $count = 10)
 	{
 		try
 		{
 			if( ! $this->subscription) throw new \Exception('No subscription found');
 
-			return $this->gateway->invoices($this->subscription['customer_id'], $count);
+			return $fromLocal
+				? $this->storage->getInvoices($this->subscription['user_id'], $count)
+				: $this->gateway->invoices($this->subscription['customer_id'], $count);
 		}
 		catch(\Exception $e)
 		{
