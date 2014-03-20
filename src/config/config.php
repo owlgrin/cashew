@@ -5,6 +5,9 @@ return array(
 		'secret' => 'your-secret-key-here',
 		'publishable' => 'your-publishable-key-here'
 	),
-	'table' => '_cashew',
+	'table' => array(
+		'subscriptions' => '_cashew_subscriptions',
+		'invoices' => '_cashew_invoices'
+	),
 	'attempts' => 3
 );

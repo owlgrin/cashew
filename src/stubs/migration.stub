@@ -12,7 +12,7 @@ class CreateCashewTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('_cashew', function(Blueprint $table)
+		Schema::create('_cashew_subscriptions', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('user_id');
@@ -30,6 +30,24 @@ class CreateCashewTable extends Migration {
 			$table->dateTime('canceled_at')->nullable()->default(null);
 			$table->dateTime('expired_at')->nullable()->default(null);
 		});
+
+		Schema::create('_cashew_invoices', function(Blueprint $table)
+		{
+			$table->increments('id');
+			$table->integer('user_id');
+			$table->string('customer_id', 51);
+			$table->string('subscription_id', 51);
+			$table->string('invoice_id', 51)->unique();
+			$table->string('currency', 5);
+			$table->dateTime('date');
+			$table->dateTime('period_start');
+			$table->dateTime('period_end');
+			$table->decimal('total', 31, 2);
+			$table->decimal('subtotal', 31, 2);
+			$table->decimal('discount', 31, 2);
+			$table->dateTime('created_at');
+			$table->dateTime('updated_at');
+		});
 	}
 
 	/**
@@ -39,7 +57,12 @@ class CreateCashewTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('_cashew', function(Blueprint $table)
+		Schema::table('_cashew_subscriptions', function(Blueprint $table)
+		{
+			$table->drop();
+		});
+
+		Schema::table('_cashew_invoices', function(Blueprint $table)
 		{
 			$table->drop();
 		});

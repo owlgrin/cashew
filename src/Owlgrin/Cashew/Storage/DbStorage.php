@@ -21,7 +21,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			$id = DB::table(Config::get('cashew::table'))->insertGetId(array(
+			$id = DB::table(Config::get('cashew::tables.subscriptions'))->insertGetId(array(
 				'user_id' => $userId,
 				'customer_id' => $customer->id(),
 				'subscription_id' => $customer->subscription()->id(),
@@ -46,7 +46,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			DB::table(Config::get('cashew::table'))
+			DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', '=', $userId)
 				->update(array(
 					'customer_id' => $customer->id(),
@@ -64,7 +64,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			DB::table(Config::get('cashew::table'))
+			DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', '=', $userId)
 				->update(array(
 					'subscription_id' => $subscription->id(),
@@ -89,7 +89,7 @@ class DbStorage implements Storage {
 		{
 			$subscription = $customer->subscription();
 
-			$id = DB::table(Config::get('cashew::table'))
+			$id = DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', '=', $userId)
 				->update(array(
 					'subscription_id' => $subscription->id(),
@@ -114,7 +114,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			$id = DB::table(Config::get('cashew::table'))
+			$id = DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', '=', $userId)
 				->update(array(
 					'subscription_ends_at' => null,
@@ -133,7 +133,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			$id = DB::table(Config::get('cashew::table'))
+			$id = DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', '=', $userId)
 				->update(array(
 					'subscription_ends_at' => $subscription->end(),
@@ -154,7 +154,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			$id = DB::table(Config::get('cashew::table'))
+			$id = DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', '=', $userId)
 				->update(array(
 					'status' => 'expired',
@@ -174,7 +174,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			$id = DB::table('_cashew_invoices') // replace with Config::get('cashew::table.invoices')
+			$id = DB::table(Config::get('cashew::tables.invoices'))
 				->insertGetId(array(
 					'user_id' => $userId,
 					'customer_id' => $invoice->customerId(),
@@ -203,7 +203,7 @@ class DbStorage implements Storage {
 	{
 		try
 		{
-			$invoices = DB::table('_cashew_invoices')
+			$invoices = DB::table(Config::get('cashew::tables.invoices'))
 				->where('user_id', $userId)
 				->take($count)
 				->orderBy('created_at', 'DESC')
@@ -224,14 +224,14 @@ class DbStorage implements Storage {
 
 	private function subscriptionByUser($userId)
 	{
-		return DB::table(Config::get('cashew::table'))
+		return DB::table(Config::get('cashew::tables.subscriptions'))
 			->where('user_id', '=', $userId)
 			->first();
 	}
 
 	private function subscriptionByCustomer($customerId)
 	{
-		return DB::table(Config::get('cashew::table'))
+		return DB::table(Config::get('cashew::tables.subscriptions'))
 			->where('customer_id', '=', $customerId)
 			->first();
 	}

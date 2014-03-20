@@ -53,21 +53,10 @@ class CashewTableCommand extends Command {
 	 */
 	protected function getMigrationStub()
 	{
-		$stub = file_get_contents(__DIR__.'/../../stubs/migration.stub');
+		$stub = file_get_contents(__DIR__.'/../../../stubs/migration.stub');
 
-		return str_replace('_cashew', $this->option('table'), $stub);
-	}
-
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return array(
-			array('table', 't', InputOption::VALUE_OPTIONAL, 'Name of Cashew table', Config::get('cashew::table')),
-		);
+		return str_replace('_cashew_subscriptions', Config::get('cashew::tables.subscriptions'), $stub);
+		return str_replace('_cashew_invoices', Config::get('cashew::tables.invoices'), $stub);
 	}
 
 }
