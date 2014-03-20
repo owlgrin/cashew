@@ -2,7 +2,9 @@
 
 interface Invoice {
 	public function currency();
-	public function date();
+	public function date($formatted);
+	public function periodStart($formatted);
+	public function periodEnd($formatted);
 	public function total();
 	public function formattedTotal();
 	public function subtotal();

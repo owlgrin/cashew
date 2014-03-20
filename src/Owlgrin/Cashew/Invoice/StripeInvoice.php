@@ -24,6 +24,20 @@ class StripeInvoice implements Invoice {
 			: $this->invoice['date'];
 	}
 
+	public function periodStart($formatted = true)
+	{
+		return $formatted
+			? Carbon::createFromTimestamp($this->invoice['period_start'])->toDateString()
+			: $this->invoice['period_start'];
+	}
+
+	public function periodEnd($formatted = true)
+	{
+		return $formatted
+			? Carbon::createFromTimestamp($this->invoice['period_end'])->toDateString()
+			: $this->invoice['period_end'];
+	}
+
 	public function total()
 	{
 		return number_format($this->invoice['total'] / 100, 2);
