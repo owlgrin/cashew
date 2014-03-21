@@ -37,21 +37,21 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	public function date($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->invoice['date'])->toDateString()
+			? Carbon::createFromTimestamp($this->invoice['date'])->toFormattedDateString()
 			: $this->invoice['date'];
 	}
 
 	public function periodStart($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->invoice['period_start'])->toDateString()
+			? Carbon::createFromTimestamp($this->invoice['period_start'])->toFormattedDateString()
 			: $this->invoice['period_start'];
 	}
 
 	public function periodEnd($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->invoice['period_end'])->toDateString()
+			? Carbon::createFromTimestamp($this->invoice['period_end'])->toFormattedDateString()
 			: $this->invoice['period_end'];
 	}
 

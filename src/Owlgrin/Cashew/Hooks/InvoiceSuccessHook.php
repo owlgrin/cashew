@@ -23,6 +23,6 @@ class InvoiceSuccessHook implements Hook {
 
 		if($invoice instanceof StorableInvoice) $invoice->store($subscription['user_id']);
 
-		IlluminateEvent::fire('cashew.payment.success', array(array('user' => $subscription['user_id'], 'invoice' => $invoice)));
+		IlluminateEvent::fire('cashew.payment.success', array($subscription['user_id'], $invoice));
 	}
 }

@@ -35,21 +35,21 @@ class LocalInvoice implements Invoice {
 	public function date($formatted = true)
 	{
 		return $formatted
-			? $this->invoice['date']
+			? Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['date'])->toFormattedDateString()
 			: Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['date'])->getTimestamp();
 	}
 
 	public function periodStart($formatted = true)
 	{
 		return $formatted
-			? $this->invoice['period_start']
+			? Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['period_start'])->toFormattedDateString()
 			: Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['period_start'])->getTimestamp();
 	}
 
 	public function periodEnd($formatted = true)
 	{
 		return $formatted
-			? $this->invoice['period_end']
+			? Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['period_end'])->toFormattedDateString()
 			: Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice['period_end'])->getTimestamp();
 	}
 
