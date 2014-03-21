@@ -52,6 +52,7 @@ class CashewExpireCommand extends Command {
 	private function expire()
 	{
 		$subscriptions = DB::table(Config::get('cashew::tables.subscriptions'))
+			->where('status', '=', 'canceled')
 			->where(DB::raw('date(subscription_ends_at)'), '=', DB::raw('curdate()'))
 			->get();
 
@@ -59,7 +60,10 @@ class CashewExpireCommand extends Command {
 		{
 			DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('id', '=', $subscription['id'])
-				->update(array('status' => 'expired'));
+				->update(array(
+					'status' => 'expired',
+					'expired_at' => DB::raw('now()')
+				));
 
 			IlluminateEvent::fire('cashew.user.expire', array($subscription['user_id']));
 		}
