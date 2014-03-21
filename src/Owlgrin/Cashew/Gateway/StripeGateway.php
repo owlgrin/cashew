@@ -1,10 +1,12 @@
 <?php namespace Owlgrin\Cashew\Gateway;
 
-use Stripe_Customer, Stripe_Invoice, Stripe_Event, Stripe_CardError, Stripe_Error;
+use Stripe_Customer, Stripe_Invoice, Stripe_Event;
+use Stripe_ApiConnectionError, Stripe_InvalidRequestError, Stripe_CardError, Stripe_Error;
 use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 use Owlgrin\Cashew\Invoice\StripeInvoice;
 use Owlgrin\Cashew\Event\StripeEvent;
+use Owlgrin\Cashew\Exceptions\Exception, Owlgrin\Cashew\Exceptions\CardException, Owlgrin\Cashew\Exceptions\NetworkException, Owlgrin\Cashew\Exceptions\InputException;
 
 class StripeGateway implements Gateway {
 
@@ -18,11 +20,19 @@ class StripeGateway implements Gateway {
 		}
 		catch(Stripe_CardError $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CardException;
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
 		}
 		catch(Stripe_Error $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new Exception;
 		}
 		catch(\Exception $e)
 		{
@@ -39,9 +49,21 @@ class StripeGateway implements Gateway {
 
 			return new StripeCustomer(Stripe_Customer::retrieve($customer));
 		}
+		catch(Stripe_CardError $e)
+		{
+			throw new CardException;
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
 		catch(Stripe_Error $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new Exception;
 		}
 		catch(\Exception $e)
 		{
@@ -58,9 +80,17 @@ class StripeGateway implements Gateway {
 
 			return new StripeSubscription($subscription);
 		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
 		catch(Stripe_Error $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new Exception;
 		}
 		catch(\Exception $e)
 		{
@@ -82,14 +112,22 @@ class StripeGateway implements Gateway {
 
 			return $invoices;
 		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
 		catch(Stripe_Error $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new Exception;
 		}
 		catch(\Exception $e)
 		{
 			throw new \Exception($e->getMessage());
-		}	
+		}
 	}
 
 	public function nextInvoice($customer)
@@ -100,14 +138,22 @@ class StripeGateway implements Gateway {
 
 			return new StripeInvoice($invoice);
 		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
 		catch(Stripe_Error $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new Exception;
 		}
 		catch(\Exception $e)
 		{
 			throw new \Exception($e->getMessage());
-		}	
+		}
 	}
 
 	public function event($event)
@@ -118,13 +164,21 @@ class StripeGateway implements Gateway {
 
 			return new StripeEvent($event);
 		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
 		catch(Stripe_Error $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new Exception;
 		}
 		catch(\Exception $e)
 		{
 			throw new \Exception($e->getMessage());
-		}	
+		}
 	}
 }
