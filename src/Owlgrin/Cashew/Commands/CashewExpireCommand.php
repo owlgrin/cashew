@@ -20,13 +20,13 @@ class CashewExpireCommand extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Command to set cashew status to expired';
+	protected $description = 'Command to convert canceled users into expired when grace period';
 	/**
 	 * Create a new command instance.
 	 *
 	 * @return void
 	 */
-	
+
 	/**
 	 * Execute the console command.
 	 *
@@ -36,41 +36,17 @@ class CashewExpireCommand extends Command {
 	{
 		try
 		{
-			
+
 			$this->info('Expiring...');
 
-			$this->expire();			
-			
+			$this->expire();
+
 			$this->info('Expired!');
 		}
 		catch(PDOException $e)
 		{
 			$this->error($e);
 		}
-	}
-
-	/**
-	 * Get the console command arguments.
-	 *
-	 * @return array
-	 */
-	protected function getArguments()
-	{
-		return array(
-			
-		);
-	}
-
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return array(
-			
-		);
 	}
 
 	private function expire()
