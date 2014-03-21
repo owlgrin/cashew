@@ -33,7 +33,13 @@ class CashewServiceProvider extends ServiceProvider {
 			return new \Owlgrin\Cashew\Commands\CashewTableCommand;
 		});
 
+		$this->app->bindShared('command.cashew.expire', function($app)
+		{
+			return new \Owlgrin\Cashew\Commands\CashewExpireCommand;
+		});
+
 		$this->commands('command.cashew.table');
+		$this->commands('command.cashew.expire');
 		
 		$this->app->singleton('cashew', 'Owlgrin\Cashew\Cashew');
 	}
