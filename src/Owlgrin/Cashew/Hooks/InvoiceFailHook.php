@@ -23,7 +23,12 @@ class InvoiceFailHook implements Hook {
 			Cashew::expireCustomer($event->customer());
 
 			$subscription = $this->storage->subscription($event->customer(), true);
-			IlluminateEvent::fire('cashew.payment.fail', array($subscription['user_id']));
+
+			IlluminateEvent::fire('cashew.user.expire', array($subscription['user_id']));
+		}
+		else
+		{
+			IlluminateEvent::fire('cashew.payment.fail', array(array('user' => $subscription['user_id'], 'invoice' => $invoice)));
 		}
 	}
 }
