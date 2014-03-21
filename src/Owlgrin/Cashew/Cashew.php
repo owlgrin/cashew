@@ -65,9 +65,11 @@ class Cashew {
 		}
 	}
 
-	public function card($card)
+	public function card($card, $options = array())
 	{
-		return $this->update(array('plan' => $this->subscription['plan'], 'card' => $card));
+		$options['card'] = $card;
+		$options['plan'] = $this->subscription['plan'];
+		return $this->update($options);
 	}
 
 	public function toPlan($plan, $prorate = true, $maintainTrial = true)
