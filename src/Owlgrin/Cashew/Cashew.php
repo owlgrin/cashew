@@ -2,6 +2,7 @@
 
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Gateway\Gateway;
+use Owlgrin\Cashew\CashewException;
 use Carbon\Carbon, Config;
 
 class Cashew {
@@ -61,7 +62,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -109,7 +110,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -122,7 +123,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -139,7 +140,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -164,7 +165,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -189,7 +190,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -205,7 +206,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -219,7 +220,7 @@ class Cashew {
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage());
+			throw new CashewException($e->getMessage());
 		}
 	}
 
@@ -250,7 +251,7 @@ class Cashew {
 
 	public function onTrial()
 	{
-		if( ! $this->subscription) throw new \Exception('No subscription found');
+		if( ! $this->subscription) throw new CashewException('No subscription found');
 
 		if(is_null($this->subscription['trial_ends_at'])) return false;
 
@@ -259,7 +260,7 @@ class Cashew {
 
 	public function onGrace()
 	{
-		if( ! $this->subscription) throw new \Exception('No subscription found');
+		if( ! $this->subscription) throw new CashewException('No subscription found');
 
 		if(is_null($this->subscription['subscription_ends_at'])) return false;
 
@@ -269,28 +270,28 @@ class Cashew {
 
 	public function expired()
 	{
-		if( ! $this->subscription) throw new \Exception('No subscription found');
+		if( ! $this->subscription) throw new CashewException('No subscription found');
 
 		return $this->status() == self::STATUS_EXPIRE;
 	}
 
 	public function subscribed()
 	{
-		if( ! $this->subscription) throw new \Exception('No subscription found');
+		if( ! $this->subscription) throw new CashewException('No subscription found');
 
 		return $this->status() == self::STATUS_ACTIVE;
 	}
 
 	public function canceled()
 	{
-		if( ! $this->subscription) throw new \Exception('No subscription found');
+		if( ! $this->subscription) throw new CashewException('No subscription found');
 
 		return $this->status() == self::STATUS_CANCEL;
 	}
 
 	public function onPlan($plan)
 	{
-		if( ! $this->subscription) throw new \Exception('No subscription found');
+		if( ! $this->subscription) throw new CashewException('No subscription found');
 
 		return $this->subscription['plan'] == $plan;
 	}
