@@ -3,7 +3,7 @@
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Gateway\Gateway;
 use Owlgrin\Cashew\Exceptions\Exception;
-use Carbon\Carbon, Config;
+use Carbon\Carbon, Config, Event;
 
 class Cashew {
 
@@ -147,9 +147,12 @@ class Cashew {
 		// no prorate
 		$options['prorate'] = false;
 
+		$shouldBeRestored = $this->expired(); // if subscription was resumed after expiration, we will fire an event later
+		
 		$this->update(array_merge($options, compact('card')));
-
 		$this->storage->resume($this->user);
+
+		if($shouldBeRestored) Event::fire('cashew.user.restore', array($this->subscription['user_id']));
 	}
 
 	public function invoices($fromLocal = true, $count = 10)
