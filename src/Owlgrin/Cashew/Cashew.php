@@ -66,6 +66,11 @@ class Cashew {
 		return $this->update($options);
 	}
 
+	public function coupon($coupon)
+	{
+		return $this->update(array('coupon' => $coupon, 'plan' => $this->subscription['plan']));
+	}
+
 	public function toPlan($plan, $prorate = true, $maintainTrial = true)
 	{
 		$trialEnd = $this->onTrial() ? $this->getTrialEnd() : null;
