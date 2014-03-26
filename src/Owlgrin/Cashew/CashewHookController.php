@@ -27,9 +27,11 @@ class CashewHookController extends Controller {
 			$payload = $this->getPayload();
 
 			$event = $this->gateway->event($payload['id']);
-			$hook = $this->getHook($event->type());
-
-			$hook->handle($event);
+			if($this->canBeHandled($event->type()))
+			{
+				$hook = $this->getHook($event->type());
+				$hook->handle($event);
+			}
 
 			return Response::make('Hook handled successfully', 200);
 		}
@@ -37,6 +39,11 @@ class CashewHookController extends Controller {
 		{
 			return Response::make('Hook handled unsuccessfully: ' . $e->getMessage(), 400);
 		}
+	}
+
+	protected function canBeHandled($type)
+	{
+		return array_key_exists($type, $this->hooks);
 	}
 
 	protected function getHook($type)
