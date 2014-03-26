@@ -17,7 +17,8 @@ class CashewHookController extends Controller {
 
 	private $hooks = array(
 		'invoice.payment_failed' => 'InvoiceFailHook',
-		'invoice.payment_succeeded' => 'InvoiceSuccessHook'
+		'invoice.payment_succeeded' => 'InvoiceSuccessHook',
+		'customer.subscription.updated' => 'SubscriptionUpdateHook'
 	);
 
 	public function handle()

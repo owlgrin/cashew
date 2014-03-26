@@ -82,6 +82,16 @@ class DbStorage implements Storage {
 		return $id;
 	}
 
+	public function updateStatus($userId, $status)
+	{
+		DB::table(Config::get('cashew::tables.subscriptions'))
+			->where('user_id', '=', $userId)
+			->update(array(
+				'status' => $status,
+				'updated_at' => DB::raw('now()')
+			));
+	}
+
 	public function resume($userId)
 	{
 		$id = DB::table(Config::get('cashew::tables.subscriptions'))

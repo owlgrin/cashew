@@ -5,6 +5,7 @@ interface Event {
 	public function type();
 	public function customer();
 	public function invoice();
+	public function subscription();
 	public function attempts();
 	public function failedMoreThan($count);
 }
