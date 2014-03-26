@@ -24,7 +24,8 @@ class InvoiceSuccessHook implements Hook {
 		{
 			if($invoice->total() > 0.00) // only when total is greater than 0
 			{
-				$invoice->store($subscription['user_id']);
+				$invoice->store($subscription['user_id']); // store invoice
+				$this->storage->updateStatus($subscription['user_id'], 'active');
 			}
 		}
 

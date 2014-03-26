@@ -17,9 +17,7 @@ class SubscriptionUpdateHook implements Hook {
 	public function handle(Event $event)
 	{
 		$subscription = $this->storage->subscription($event->customer(), true);
-		
-		$this->storage->updateStatus($subscription['user_id'], $event->subscription()->status());
 
-		IlluminateEvent::fire('cashew.subscription.update', array($subscription['user_id']));
+		IlluminateEvent::fire('cashew.subscription.update', array($subscription['user_id'], $event->subscription()));
 	}
 }
