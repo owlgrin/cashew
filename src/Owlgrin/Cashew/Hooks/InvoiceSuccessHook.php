@@ -28,11 +28,6 @@ class InvoiceSuccessHook implements Hook {
 			}
 		}
 
-		if($subscription->status != 'trialing')
-		{
-			$this->storage->updateStatus($subscription['user_id'], 'active');
-		}
-
 		IlluminateEvent::fire('cashew.payment.success', array($subscription['user_id'], $invoice));
 	}
 }
