@@ -149,6 +149,9 @@ class Cashew {
 		// ending the trial right now
 		$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
 
+		// continuing from the previous quantity
+		$options['quantity'] = isset($options['quantity']) ? $options['quantity'] : $this->subscription['quantity'];
+
 		// no prorate
 		$options['prorate'] = false;
 
