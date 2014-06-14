@@ -1,7 +1,7 @@
 ## Cashew
 ======
 
-Simplest subscription billing for Laravel using Stripe
+Cashew allows you to integrate Stripe subscription billing in the most easiet way. We handle all the headache in maintaining the edge cases in the the subscription billing, while exposing an easy API to consume.
 
 ## Official Documentation
 
