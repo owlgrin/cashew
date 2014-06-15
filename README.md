@@ -74,7 +74,25 @@ You can apply a coupon to a subscription using the 'coupon' method.
 Cashew::coupon('20OFF');
 ```
 
+#### Changing the Plan
 
+Swapping the plans in a subscription billing is not a easy job. There are many things to be taken care of. We do this for you and you simply can change the plan of a subscription like this.
+
+```php
+Cashew::toPlan('premium');
+```
+
+By default, Cashew prorates the plan change, but you can do it via the second parameter.
+
+```php
+Cashew::toPlan('premium', false); // no prorate
+```
+
+If there is some trial period left in the subscription when the plan is changed, by default, we will maintain the trial period. You can force Cashew to stop the trial period immediately via the third parameter.
+
+```php
+Cashew::toPlan('premium', true, false); // stop trial period immediately
+```
 
 ### Contributing To Cashew
 
