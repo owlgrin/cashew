@@ -41,7 +41,7 @@ To create a new subscription, you can simply pass the user identifier (usually t
 Cashew::create(Auth::user()->id, array('trial_end' => 'now', 'coupon' => 'earlybird'));
 ```
 
-Now, once there exists, a subscription for a user, you can register that for each request using `user` method. (Probably, when user logs in.)
+Now, once there exists a subscription for the user, you can register that for each request using `user` method. (Probably, when user logs in.)
 
 ```php
 if(Auth::attempt($username, $password))
@@ -49,6 +49,24 @@ if(Auth::attempt($username, $password))
 	Cashew::user(Auth::user()->id);
 }
 ```
+
+Once set, you can access the different methods on the subscription using the following methods.
+
+#### Updating the Card Details
+
+You can update the card details using the `card` method.
+
+```php
+Cashew::card('tok_o48H37h8eh');
+```
+
+If you want to update other details while updating card, like 'trial_end', you can do it through the second parameter.
+
+```php
+Cashew::card('tok_o48H37h8eh', array('trial_end' => 'now'));
+```
+
+
 
 ### Contributing To Cashew
 
