@@ -27,6 +27,29 @@ And lastly add the following in the facades list in the same `app.php` file to e
 ...
 ```
 
+### Usage
+
+Cashew works by mapping everything about a user to the primary key of that users in your app. To setup everything, you would need to migrate few tables, which you can do with the following command.
+
+`php artisan migration:publish --package owlgrin/cashew`
+
+#### New Subscription
+
+To create a new subscription, you can simply pass the user identifier (usually the primary key) along with an associative array with keys 'card', 'email', etc. (all optional).
+
+```php
+Cashew::create(Auth::user()->id, array('trial_end' => 'now', 'coupon' => 'earlybird'));
+```
+
+Now, once there exists, a subscription for a user, you can register that for each request using `user` method. (Probably, when user logs in.)
+
+```php
+if(Auth::attempt($username, $password))
+{
+	Cashew::user(Auth::user()->id);
+}
+```
+
 ### Contributing To Cashew
 
 Contribution guidelines coming soon.
