@@ -66,6 +66,14 @@ If you want to update other details while updating card, like 'trial_end', you c
 Cashew::card('tok_o48H37h8eh', array('trial_end' => 'now'));
 ```
 
+#### Applying a Coupon
+
+You can apply a coupon to a subscription using the 'coupon' method.
+
+```php
+Cashew::coupon('20OFF');
+```
+
 
 
 ### Contributing To Cashew
