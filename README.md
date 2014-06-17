@@ -118,6 +118,26 @@ Cashew::increment(3);
 
 > Same is valid for 'decrement' method too.
 
+#### update
+#### expire
+#### expireCustomer
+#### cancelNow
+#### cancel
+#### resume
+#### invoices
+#### nextInvoice
+#### status
+#### active
+#### inactive
+#### isSuper
+#### hasCard
+#### onTrial
+#### onGrace
+#### expired
+#### subscribed
+#### canceled
+#### onPlan
+
 ### Contributing To Cashew
 
 Contribution guidelines coming soon.
