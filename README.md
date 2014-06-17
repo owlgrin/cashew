@@ -94,6 +94,30 @@ If there is some trial period left in the subscription when the plan is changed,
 Cashew::toPlan('premium', true, false); // stop trial period immediately
 ```
 
+#### Working with Quantity
+
+You may have requirement to charge your users on each unit of the services they use. For example, you may charge them on 'per user' basis. Cashew makes it easy to work with quantity.
+
+You can increment a quantity using the 'increment' method.
+
+```php
+Cashew::increment();
+```
+
+Similarly, 'decrement' method allows you to decrease the quantity by one.
+
+```php
+Cashew::decrement();
+```
+
+You can also pass the quantity as the first parameter to these methods to override the default value of one. The following code increments the quantity by three.
+
+```php
+Cashew::increment(3);
+```
+
+> Same is valid for 'decrement' method too.
+
 ### Contributing To Cashew
 
 Contribution guidelines coming soon.
