@@ -118,9 +118,18 @@ Cashew::increment(3);
 
 > Same is valid for 'decrement' method too.
 
+#### Updating a Subscription
+
+Although, we have already made helper methods like `toPlan`, `coupon`, `card` to allow you to make specific updates easily. Still, if you would like to use the raw update method to update your subscription on your own,you can use the `update` method.
+
+```php
+Cashew::update(array('plan' => 'new-plan', 'coupon' => 'yipee'));
+```
+
+The method accepts just one argument - an associative array - with all the options that Strip API accepts.
+
 ## Documentation about these, coming soon
 
-#### update
 #### expire
 #### expireCustomer
 #### cancelNow
