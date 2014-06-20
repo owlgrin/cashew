@@ -118,6 +118,8 @@ Cashew::increment(3);
 
 > Same is valid for 'decrement' method too.
 
+## Documentation about these, coming soon
+
 #### update
 #### expire
 #### expireCustomer
