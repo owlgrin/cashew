@@ -128,6 +128,22 @@ Cashew::update(array('plan' => 'new-plan', 'coupon' => 'yipee'));
 
 The method accepts just one argument - an associative array - with all the options that Strip API accepts.
 
+#### Canceling a Subsription
+
+You can cancel a user's subscription using the `cancel` method.
+
+```php
+Cashew::cancel();
+```
+
+User will not be charged until you resume his/her subscription again. However, this method will cancel the subscription at the end of the current subscription period. Thus, the user will now be on grace period.
+
+If you want to cancel the subscription right away, use `cancelNow` method instead.
+
+```php
+Cashew::cancelNow();
+```
+
 ## Documentation about these, coming soon
 
 #### expire
