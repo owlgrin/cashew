@@ -144,13 +144,30 @@ If you want to cancel the subscription right away, use `cancelNow` method instea
 Cashew::cancelNow();
 ```
 
+#### Resuming a subscription
+
+In every subscription application, subscriptions expire. Often, these are due to temporary reasons like trial end, and they are to be resumed later. Cashew provides `resume` method to easily do so. There are many caveats in resuming a subscription and cashew takes care of all of them for you.
+
+```php
+Cashew::resume();
+```
+
+This was the simplest use. You may require to pass some options whenr resuming, which can passed as associative array, like so.
+
+```php
+Cashew::resume(array('plan' => 'premium', 'quantity' => 3));
+```
+
+Many times, you will need to resume the subscription after it has expired due to end of trial period. Often, you will ask for your user's card to resume the subscription. You can pass in the card details as the second argument to `resume` method.
+
+```php
+Cashew::resume(array('plan' => 'premium'), 'tok_dff38rm347gBYF7');
+```
+
 ## Documentation about these, coming soon
 
 #### expire
 #### expireCustomer
-#### cancelNow
-#### cancel
-#### resume
 #### invoices
 #### nextInvoice
 #### status
