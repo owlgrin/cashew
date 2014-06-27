@@ -178,6 +178,17 @@ Sometimes, you may want to expire your user's account based on the Stripe's cust
 Cashew::expireCustomer($customerId);
 ```
 
+#### Checking is user has provided card
+
+You may run a business where you ask for card upfront or not. If you want to check if the user has card associated with his subcription, you can do it using the `hasCard` method.
+
+```php
+if($user->birthday == Carbon\Carbon::today() && Cashew::hasCard())
+{
+	// send birthday cake
+}
+```
+
 ## Documentation about these, coming soon
 
 #### invoices
