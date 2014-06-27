@@ -164,10 +164,22 @@ Many times, you will need to resume the subscription after it has expired due to
 Cashew::resume(array('plan' => 'premium'), 'tok_dff38rm347gBYF7');
 ```
 
+#### Expiring Subscriptions
+
+You may sometimes want t expire the subscriptions manually based upon your business domain. For instance, you might have a cron job running, which will expire the subscriptions that are beyond their trial periods. For such instances, you can use the `expire` method.
+
+```php
+Cashew::expire();
+```
+
+Sometimes, you may want to expire your user's account based on the Stripe's customer ID for the user. Then, `expireCustomer` method is just for the same purpose.
+
+```php
+Cashew::expireCustomer($customerId);
+```
+
 ## Documentation about these, coming soon
 
-#### expire
-#### expireCustomer
 #### invoices
 #### nextInvoice
 #### status
