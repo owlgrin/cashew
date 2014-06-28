@@ -189,9 +189,30 @@ if($user->birthday == Carbon\Carbon::today() && Cashew::hasCard())
 }
 ```
 
+#### Get the invoices of user
+
+It is always recommended to show the payment history of your users in their billing section. To help you with this, 'invoices' method will fetch you all the previous invoices that are paid by the user.
+
+```php
+Cashew::invoices();
+```
+
+By default, it will fetch the invoices details that are saved locally in your database. But, you may need more information for each invoice, and thus want to fetch the details through API. To do so, pass the first parameter as `false` to this method.
+
+```php
+// fetch from API
+Cashew::invoices(false);
+```
+
+Also, by default, it will fetch the lastest 10 invoices. In case, you want to fetch all the invoices, pass the number as the second parameter.
+
+```php
+// fetch 25 invoices
+Cashew::invoices(true, 25);
+```
+
 ## Documentation about these, coming soon
 
-#### invoices
 #### nextInvoice
 #### status
 #### active
