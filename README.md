@@ -211,9 +211,18 @@ Also, by default, it will fetch the lastest 10 invoices. In case, you want to fe
 Cashew::invoices(true, 25);
 ```
 
+#### Getting upcoming invoice for a user
+
+If is always recommened that you show your users, their upcoming invoices so that there won't be any surprises for the when they will be billed.
+
+Cashew provides a handy `nextInvoice` method to fetch the upcoming invoice for a subscription.
+
+```php
+Cashew::nextInvoice();
+```
+
 ## Documentation about these, coming soon
 
-#### nextInvoice
 #### status
 #### active
 #### inactive
