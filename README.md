@@ -221,6 +221,17 @@ Cashew provides a handy `nextInvoice` method to fetch the upcoming invoice for a
 Cashew::nextInvoice();
 ```
 
+#### Getting status of the subscription
+
+You may need to do different action depending upon the status of the subscription for a user. To let you easily find the status of the subscription, you may use `status` method.
+
+```php
+if(Cashew::status() === 'active')
+{
+	$user->sendGift();
+}
+```
+
 ## Documentation about these, coming soon
 
 #### status
