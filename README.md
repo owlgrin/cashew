@@ -232,10 +232,28 @@ if(Cashew::status() === 'active')
 }
 ```
 
+#### Helper status determiners
+
+Cashew provides you with some helper methods to determine the subscription for the user.
+
+**Active**
+
+To check if user has an active subscription. Active subscription means that the user is allowed to be considered as a paid customer. Precisely, the method returns true if either of these is true:
+
+	- is the user, super user?
+	- is he on trial?
+	- is he on grace period?
+	- does he have an active subscription?
+
+```php
+if( ! Cashew::active())
+{
+	Redirect::to(...);
+}
+```
+
 ## Documentation about these, coming soon
 
-#### status
-#### active
 #### inactive
 #### isSuper
 #### hasCard
