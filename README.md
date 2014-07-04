@@ -252,6 +252,17 @@ if( ! Cashew::active())
 }
 ```
 
+**Inactive**
+
+Also, there's another helper method to determine if the user has an inactive subscription.
+
+```php
+if(Cashew::inactive())
+{
+	Offer::send(...);
+}
+```
+
 ## Documentation about these, coming soon
 
 #### inactive
