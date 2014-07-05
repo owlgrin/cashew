@@ -263,11 +263,19 @@ if(Cashew::inactive())
 }
 ```
 
+**Has Card?**
+
+Sometimes, you may not want to know just if the user is active or not. You may want to specifically know if the user has provided his card details of not.
+
+```php
+if(Cashew::hasCard())
+{
+	Redirect::to(...);
+}
+```
+
 ## Documentation about these, coming soon
 
-#### inactive
-#### isSuper
-#### hasCard
 #### onTrial
 #### onGrace
 #### expired
