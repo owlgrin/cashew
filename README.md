@@ -273,6 +273,17 @@ if(Cashew::hasCard())
 }
 ```
 
+**onTrial**
+
+The `onTrial` method allows you to quickly figure out if the user is on trial or not.
+
+```php
+if(Cashew::onTrial())
+{
+	// send them coupon code
+}
+```
+
 ## Documentation about these, coming soon
 
 #### onTrial
