@@ -284,10 +284,19 @@ if(Cashew::onTrial())
 }
 ```
 
+**onGrace**
+
+The `onGrace` method lets you easily figure out if the user is on grace period or not. Grace period is the period between cancellation of the subscription and the end of current subscription period. For instance, if user's subscription had to end on November 30th and he cancels his subscription on November 15th, then between November 16th and November 30th, he is on the grace period.
+
+```php
+if(Cashew::onGrace())
+{
+	// show alert
+}
+```
+
 ## Documentation about these, coming soon
 
-#### onTrial
-#### onGrace
 #### expired
 #### subscribed
 #### canceled
