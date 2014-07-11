@@ -295,9 +295,19 @@ if(Cashew::onGrace())
 }
 ```
 
+**expired**
+
+To determine if the user is expired, you may use the `expired` method.
+
+```php
+if(Cashew::expired())
+{
+	Redirect::to('billing');
+}
+```
+
 ## Documentation about these, coming soon
 
-#### expired
 #### subscribed
 #### canceled
 #### onPlan
