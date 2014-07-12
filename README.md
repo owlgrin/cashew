@@ -251,6 +251,17 @@ if( ! Cashew::active())
 }
 ```
 
+**Subscribed**
+
+Sometimes, checking if the user is active is not enough. You may need to check if the user has an active subscription or not. The `subscribed` method comes handy in such cases.
+
+```php
+if( ! Cashew::subscribed())
+{
+	Redirect::to('billing.plans');
+}
+```
+
 **Inactive**
 
 Also, there's another helper method to determine if the user has an inactive subscription.
@@ -273,7 +284,7 @@ if(Cashew::hasCard())
 }
 ```
 
-**onTrial**
+**Trialing**
 
 The `onTrial` method allows you to quickly figure out if the user is on trial or not.
 
@@ -284,7 +295,7 @@ if(Cashew::onTrial())
 }
 ```
 
-**onGrace**
+**On Grace period**
 
 The `onGrace` method lets you easily figure out if the user is on grace period or not. Grace period is the period between cancellation of the subscription and the end of current subscription period. For instance, if user's subscription had to end on November 30th and he cancels his subscription on November 15th, then between November 16th and November 30th, he is on the grace period.
 
@@ -295,7 +306,7 @@ if(Cashew::onGrace())
 }
 ```
 
-**expired**
+**Expired**
 
 To determine if the user is expired, you may use the `expired` method.
 
@@ -308,7 +319,6 @@ if(Cashew::expired())
 
 ## Documentation about these, coming soon
 
-#### subscribed
 #### canceled
 #### onPlan
 
