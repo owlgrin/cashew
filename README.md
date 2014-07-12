@@ -317,9 +317,19 @@ if(Cashew::expired())
 }
 ```
 
+**Canceled**
+
+To quickly check if the user has canceled the subscription, `canceled` method can be used.
+
+```php
+if(Cashew::canceled())
+{
+	Redirect::to('billing.upgrade');
+}
+```
+
 ## Documentation about these, coming soon
 
-#### canceled
 #### onPlan
 
 ### Contributing To Cashew
