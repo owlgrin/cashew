@@ -328,9 +328,16 @@ if(Cashew::canceled())
 }
 ```
 
-## Documentation about these, coming soon
+**Plan**
 
-#### onPlan
+If you offer multiple plans to your users, you may require to check if someone is on a particular plan or not. You may use `onPlan` method for that.
+
+```php
+if(Cashew::onPlan('gold'))
+{
+	$allowReferral = true;
+}
+```
 
 ### Contributing To Cashew
 
