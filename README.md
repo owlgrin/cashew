@@ -339,6 +339,10 @@ if(Cashew::onPlan('gold'))
 }
 ```
 
+### Webhook Controller
+
+Cashew comes with working Webhook Controller out of the box.
+
 ### Contributing To Cashew
 
 Contribution guidelines coming soon.
