@@ -19,12 +19,18 @@ And then include the following service provider in your `app.php`.
 ...
 ```
 
-And lastly add the following in the facades list in the same `app.php` file to easily use the package.
+And then add the following in the facades list in the same `app.php` file to easily use the package.
 
 ```php
 ...
 'Cashew' => 'Owlgrin\Cashew\CashewFacade',
 ...
+```
+
+And lastly, publish the config.
+
+```
+php artisan config:publish owlgrin/cashew
 ```
 
 ### Usage
