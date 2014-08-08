@@ -347,7 +347,31 @@ if(Cashew::onPlan('gold'))
 
 ### Webhook Controller
 
-Cashew comes with working Webhook Controller out of the box.
+Cashew comes with working Webhook Controller out of the box. And by default, it handles the three events:
+
+- Subscription Update
+- Successful Payment
+- Failed Payment
+
+To use the controller, you simply need to register a route like this:
+
+```php
+Route::post('hooks/stripe', 'Owlgrin\Cashew\CashewHookController@handle');
+```
+After doing the necessary things, it fires an event, to which you can listen and extend the functionality for these events.
+
+- Subscription Update fires an event called `cashew.subscription.update` with the `user_id` and the `subscription` object.
+- Successful Payment fires an event called `cashew.payment.success` with the `user_id` and the `invoice` object.
+- Successful Payment fires an event called `cashew.payment.fail` with the `user_id` and the `invoice` object.
+
+By default, we take care ot updating the data in the database, but you can extending the functionality like sending an email receipt by listening to these events, like so:
+
+```php
+Event::listen('cashew.payment.success', function($id, $invoice)
+{
+	User::find($id)->sendReceipt($invoice);
+});
+```
 
 ### Contributing To Cashew
 
