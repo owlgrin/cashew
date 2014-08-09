@@ -20,7 +20,7 @@ class CashewExpireCommand extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Command to convert canceled users into expired when grace period';
+	protected $description = 'Command to convert canceled users into expired when grace period ends';
 	/**
 	 * Create a new command instance.
 	 *
