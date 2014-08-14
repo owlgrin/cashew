@@ -373,6 +373,14 @@ Event::listen('cashew.payment.success', function($id, $invoice)
 });
 ```
 
+### Expiring users when grace period ends
+
+Cashew can of course expire users in case of failed payments, but in case of end of grace period, you would have you expire the users manually. To do so, Cashew provides you with an artisan command, which you can put in a daily cron job, which will do the job or you. You may call the command from your terminal like so:
+
+```
+php artisan cashew:expire
+```
+
 ### Contributing To Cashew
 
 Contribution guidelines coming soon.
