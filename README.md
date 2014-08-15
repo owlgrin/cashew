@@ -381,6 +381,14 @@ Cashew can of course expire users in case of failed payments, but in case of end
 php artisan cashew:expire
 ```
 
+### Exceptions
+
+Cashew wraps up the various Stripe's exceptions into these exceptions:
+
+- `Owlgrin\Cashew\Exceptions\CardException` - When processing a card fails.
+- `Owlgrin\Cashew\Exceptions\InputException` - When the data was not passed correctly.
+- `Owlgrin\Cashew\Exceptions\NetworkException` - When the connection to Stripe couldn't be made.
+
 ### Contributing To Cashew
 
 Contribution guidelines coming soon.
