@@ -389,6 +389,21 @@ Cashew wraps up the various Stripe's exceptions into these exceptions:
 - `Owlgrin\Cashew\Exceptions\InputException` - When the data was not passed correctly.
 - `Owlgrin\Cashew\Exceptions\NetworkException` - When the connection to Stripe couldn't be made.
 
+### Extending Cashew
+
+The whole package is interface-driven, which means that you can easily swap out an implementation by creating a custom implementation of the interface.
+
+Here are the interfaces that can be extended with your own versions.
+
+- `Owlgrin\Cashew\Card\Card`
+- `Owlgrin\Cashew\Customer\Customer`
+- `Owlgrin\Cashew\Event\Event`
+- `Owlgrin\Cashew\Gateway\Gateway`
+- `Owlgrin\Cashew\Hook\Hook`
+- `Owlgrin\Cashew\Invoice\Invoice`
+- `Owlgrin\Cashew\Storage\Storage`
+- `Owlgrin\Cashew\Subscription\Subscription`
+
 ### Contributing To Cashew
 
 Contribution guidelines coming soon.
