@@ -5,6 +5,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Config;
 
+/**
+ * Command to generate the required migration
+ */
 class CashewTableCommand extends Command {
 
 	/**
@@ -37,6 +40,10 @@ class CashewTableCommand extends Command {
 		$this->call('dump-autoload');
 	}
 
+	/**
+	 * Creates the base file for migration o reside into
+	 * @return Migration
+	 */
 	protected function createBaseMigration()
 	{
 		$name = 'create_cashew_table';

@@ -6,6 +6,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use DB, Config;
 
+/**
+ * Command to expire users who ended their grace period
+ */
 class CashewExpireCommand extends Command {
 
 	/**
@@ -49,8 +52,13 @@ class CashewExpireCommand extends Command {
 		}
 	}
 
+	/**
+	 * The main method which does all the work
+	 * @return void
+	 */
 	private function expire()
 	{
+		// get all the subscriptions which ends today
 		$subscriptions = DB::table(Config::get('cashew::tables.subscriptions'))
 			->where('status', '=', 'canceled')
 			->where(DB::raw('date(subscription_ends_at)'), '=', DB::raw('curdate()'))
@@ -58,6 +66,7 @@ class CashewExpireCommand extends Command {
 
 		foreach($subscriptions as $index => $subscription)
 		{
+			// mark them as expired
 			DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('id', '=', $subscription['id'])
 				->update(array(
@@ -65,6 +74,7 @@ class CashewExpireCommand extends Command {
 					'expired_at' => DB::raw('now()')
 				));
 
+			// and fire an event to handle the event by the app accordingly
 			IlluminateEvent::fire('cashew.user.expire', array($subscription['user_id']));
 		}
 	}
