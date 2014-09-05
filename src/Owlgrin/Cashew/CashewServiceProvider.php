@@ -48,15 +48,4 @@ class CashewServiceProvider extends ServiceProvider {
 	{
 		$this->package('owlgrin/cashew');
 	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array();
-	}
-
 }
