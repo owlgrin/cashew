@@ -1,5 +1,6 @@
 <?php namespace Owlgrin\Cashew;
 
+use Exception;
 use Owlgrin\Cashew\Gateway\Gateway;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
@@ -52,7 +53,7 @@ class CashewHookController extends Controller {
 
 			return Response::make('Hook handled successfully', 200);
 		}
-		catch(\Exception $e)
+		catch(Exception $e)
 		{
 			return Response::make('Hook handled unsuccessfully: ' . $e->getMessage(), 400);
 		}
