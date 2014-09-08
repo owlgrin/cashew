@@ -26,6 +26,8 @@ class CashewServiceProvider extends ServiceProvider {
 		    return new \Owlgrin\Cashew\Gateway\StripeGateway;
 		});
 
+		// Binding DB implementation be default, users may switch it out
+		// with their own implementation, if they wish to.
 		$this->app->bind('Owlgrin\Cashew\Storage\Storage', 'Owlgrin\Cashew\Storage\DbStorage');
 
 		$this->app->bindShared('command.cashew.table', function($app)
