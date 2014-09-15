@@ -8,8 +8,16 @@ use Owlgrin\Cashew\Invoice\StripeInvoice;
 use Owlgrin\Cashew\Event\StripeEvent;
 use Owlgrin\Cashew\Exceptions\Exception, Owlgrin\Cashew\Exceptions\CardException, Owlgrin\Cashew\Exceptions\NetworkException, Owlgrin\Cashew\Exceptions\InputException;
 
+/**
+ * The Stripe implementation of Gateway
+ */
 class StripeGateway implements Gateway {
 
+	/**
+	 * Creates the subscription
+	 * @param  array $options
+	 * @return Customer
+	 */
 	public function create($options)
 	{
 		try
@@ -40,6 +48,12 @@ class StripeGateway implements Gateway {
 		}
 	}
 
+	/**
+	 * Updates a subscription
+	 * @param  string $customer
+	 * @param  array  $options
+	 * @return Customer
+	 */
 	public function update($customer, $options = array())
 	{
 		try
@@ -71,6 +85,12 @@ class StripeGateway implements Gateway {
 		}
 	}
 
+	/**
+	 * Cancels the subscription
+	 * @param  string  $customer
+	 * @param  boolean $atPeriodEnd
+	 * @return Subscription
+	 */
 	public function cancel($customer, $atPeriodEnd = true)
 	{
 		try
@@ -98,6 +118,12 @@ class StripeGateway implements Gateway {
 		}
 	}
 
+	/**
+	 * Returns the invoices for the subscription
+	 * @param  string  $customer
+	 * @param  integer $count
+	 * @return array
+	 */
 	public function invoices($customer, $count = 10)
 	{
 		try
@@ -130,6 +156,11 @@ class StripeGateway implements Gateway {
 		}
 	}
 
+	/**
+	 * Returns the upcoming invoice
+	 * @param  string $customer
+	 * @return Invoice
+	 */
 	public function nextInvoice($customer)
 	{
 		try
@@ -156,6 +187,11 @@ class StripeGateway implements Gateway {
 		}
 	}
 
+	/**
+	 * Returns the event from the id
+	 * @param  string $event
+	 * @return Event
+	 */
 	public function event($event)
 	{
 		try
