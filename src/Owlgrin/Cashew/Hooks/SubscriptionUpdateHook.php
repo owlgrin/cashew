@@ -5,8 +5,15 @@ use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Hooks\Hook;
 use Owlgrin\Cashew\Event\Event;
 
+/**
+ * Hook to handle updation to subscriptions
+ */
 class SubscriptionUpdateHook implements Hook {
 
+	/**
+	 * Instance of Storage implementation
+	 * @var Storage
+	 */
 	protected $storage;
 
 	public function __construct(Storage $storage)
@@ -14,6 +21,11 @@ class SubscriptionUpdateHook implements Hook {
 		$this->storage = $storage;
 	}
 
+	/**
+	 * Handles the event
+	 * @param  Event  $event
+	 * @return void
+	 */
 	public function handle(Event $event)
 	{
 		$subscription = $this->storage->subscription($event->customer(), true);
