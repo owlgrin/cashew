@@ -7,9 +7,21 @@ use Owlgrin\Cashew\Hooks\Hook;
 use Owlgrin\Cashew\Event\Event;
 use Owlgrin\Cashew\Cashew;
 
+/**
+ * Hook to handle successful payment
+ */
 class InvoiceSuccessHook implements Hook {
 
+	/**
+	 * Instance of storage implementation
+	 * @var Storage
+	 */
 	protected $storage;
+
+	/**
+	 * Cahew instance
+	 * @var Cashew
+	 */
 	protected $cashew;
 
 	public function __construct(Storage $storage, Cashew $cashew)
@@ -18,6 +30,11 @@ class InvoiceSuccessHook implements Hook {
 		$this->cashew = $cashew;
 	}
 
+	/**
+	 * Handles the event
+	 * @param  Event  $event
+	 * @return void
+	 */
 	public function handle(Event $event)
 	{
 		$invoice = $event->invoice();
