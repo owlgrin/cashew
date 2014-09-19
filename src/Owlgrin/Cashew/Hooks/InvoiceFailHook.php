@@ -7,8 +7,15 @@ use Owlgrin\Cashew\Event\Event;
 use Owlgrin\Cashew\CashewFacade as Cashew;
 use Config;
 
+/**
+ * Hook to handle failed payment
+ */
 class InvoiceFailHook implements Hook {
 
+	/**
+	 * Instance of storage implementation
+	 * @var Storage
+	 */
 	protected $storage;
 
 	public function __construct(Storage $storage)
@@ -16,10 +23,15 @@ class InvoiceFailHook implements Hook {
 		$this->storage = $storage;
 	}
 
+	/**
+	 * Handles the webhook call
+	 * @param  Event  $event
+	 * @return void
+	 */
 	public function handle(Event $event)
 	{
 		$subscription = $this->storage->subscription($event->customer(), true);
-		
+
 		if($event->failedMoreThan(Config::get('cashew::attempts')))
 		{
 			Cashew::expireCustomer($event->customer());
