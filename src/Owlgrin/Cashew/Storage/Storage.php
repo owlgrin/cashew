@@ -4,6 +4,9 @@ use Owlgrin\Cashew\Customer\Customer;
 use Owlgrin\Cashew\Subscription\Subscription;
 use Owlgrin\Cashew\Invoice\Invoice;
 
+/**
+ * The storage contract
+ */
 interface Storage {
 	/**
 	 * Returns the subscription of a user
