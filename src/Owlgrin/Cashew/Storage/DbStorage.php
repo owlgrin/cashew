@@ -8,15 +8,30 @@ use Owlgrin\Cashew\Invoice\LocalInvoice;
 use Owlgrin\Cashew\Card\Card;
 use Carbon\Carbon, Config, DB;
 
+/**
+ * The database implementation of Storage
+ */
 class DbStorage implements Storage {
-	
+
+	/**
+	 * Returns the subscription
+	 * @param  integer  $id
+	 * @param  boolean $byCustomer
+	 * @return array
+	 */
 	public function subscription($id, $byCustomer = false)
 	{
 		if( ! $id) throw new \Exception('Cannot fetch subscription');
-		
+
 		return $byCustomer ? $this->subscriptionByCustomer($id) : $this->subscriptionByUser($id);
 	}
 
+	/**
+	 * Creates a new subscription
+	 * @param  string   $userId
+	 * @param  Customer $customer
+	 * @return integer
+	 */
 	public function create($userId, Customer $customer)
 	{
 		$id = DB::table(Config::get('cashew::tables.subscriptions'))->insertGetId(array(
@@ -35,6 +50,12 @@ class DbStorage implements Storage {
 		return $id;
 	}
 
+	/**
+	 * Updates the subscription by user
+	 * @param  string   $userId
+	 * @param  Customer $customer
+	 * @return void
+	 */
 	public function customer($userId, Customer $customer)
 	{
 		DB::table(Config::get('cashew::tables.subscriptions'))
@@ -46,6 +67,12 @@ class DbStorage implements Storage {
 			));
 	}
 
+	/**
+	 * Updates the subscription by subscription
+	 * @param  string       $userId
+	 * @param  Subscription $subscription
+	 * @return void
+	 */
 	public function subscribe($userId, Subscription $subscription)
 	{
 		DB::table(Config::get('cashew::tables.subscriptions'))
@@ -62,6 +89,12 @@ class DbStorage implements Storage {
 			));
 	}
 
+	/**
+	 * Updates a subscription
+	 * @param  string   $userId
+	 * @param  Customer $customer
+	 * @return integer
+	 */
 	public function update($userId, Customer $customer)
 	{
 		$subscription = $customer->subscription();
@@ -82,6 +115,12 @@ class DbStorage implements Storage {
 		return $id;
 	}
 
+	/**
+	 * Updates the status of subscription
+	 * @param  string $userId
+	 * @param  string $status
+	 * @return void
+	 */
 	public function updateStatus($userId, $status)
 	{
 		DB::table(Config::get('cashew::tables.subscriptions'))
@@ -92,6 +131,11 @@ class DbStorage implements Storage {
 			));
 	}
 
+	/**
+	 * Resumes a subscription
+	 * @param  string $userId
+	 * @return integer
+	 */
 	public function resume($userId)
 	{
 		$id = DB::table(Config::get('cashew::tables.subscriptions'))
@@ -104,6 +148,12 @@ class DbStorage implements Storage {
 		return $id;
 	}
 
+	/**
+	 * Cancels a subscription
+	 * @param  string       $userId
+	 * @param  Subscription $subscription
+	 * @return integer
+	 */
 	public function cancel($userId, Subscription $subscription)
 	{
 		$id = DB::table(Config::get('cashew::tables.subscriptions'))
@@ -118,6 +168,11 @@ class DbStorage implements Storage {
 		return $id;
 	}
 
+	/**
+	 * Expires a subscription
+	 * @param  string $userId
+	 * @return integer
+	 */
 	public function expire($userId)
 	{
 		$id = DB::table(Config::get('cashew::tables.subscriptions'))
@@ -131,6 +186,12 @@ class DbStorage implements Storage {
 		return $id;
 	}
 
+	/**
+	 * Stores an invoice
+	 * @param  string  $userId
+	 * @param  Invoice $invoice
+	 * @return integer
+	 */
 	public function storeInvoice($userId, Invoice $invoice)
 	{
 		$id = DB::table(Config::get('cashew::tables.invoices'))
@@ -153,6 +214,12 @@ class DbStorage implements Storage {
 		return $id;
 	}
 
+	/**
+	 * Returns the invoices
+	 * @param  string  $userId
+	 * @param  integer $count
+	 * @return array
+	 */
 	public function getInvoices($userId, $count = 10)
 	{
 		$invoices = DB::table(Config::get('cashew::tables.invoices'))
@@ -169,6 +236,11 @@ class DbStorage implements Storage {
 		return $invoices;
 	}
 
+	/**
+	 * Returns the subscription by user
+	 * @param  string $userId
+	 * @return array
+	 */
 	private function subscriptionByUser($userId)
 	{
 		return DB::table(Config::get('cashew::tables.subscriptions'))
@@ -176,6 +248,11 @@ class DbStorage implements Storage {
 			->first();
 	}
 
+	/**
+	 * Returns the subscription by customer
+	 * @param  string $customerId
+	 * @return array
+	 */
 	private function subscriptionByCustomer($customerId)
 	{
 		return DB::table(Config::get('cashew::tables.subscriptions'))
