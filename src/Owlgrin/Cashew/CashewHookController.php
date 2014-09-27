@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
 use App;
 
+/**
+ * The webhook controller which responds to the webhook calls
+ */
 class CashewHookController extends Controller {
 
 	/**
