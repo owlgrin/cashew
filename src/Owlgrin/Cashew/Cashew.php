@@ -5,6 +5,9 @@ use Owlgrin\Cashew\Gateway\Gateway;
 use Owlgrin\Cashew\Exceptions\Exception;
 use Carbon\Carbon, Config, Event;
 
+/**
+ * The Cashew core
+ */
 class Cashew {
 
 	const STATUS_TRIAL = 'trialing';
