@@ -49,6 +49,11 @@ class Cashew {
 		$this->storage = $storage;
 	}
 
+	/**
+	 * Sets the user and subscription for later use
+	 * @param  string|number $user
+	 * @return Cashew
+	 */
 	public function user($user)
 	{
 		$this->user = $user;
@@ -56,16 +61,28 @@ class Cashew {
 		return $this;
 	}
 
+	/**
+	 * Refreshes the subscription
+	 * @return void
+	 */
 	public function refreshSubscription()
 	{
 		$this->subscription = $this->storage->subscription($this->user);
 	}
 
+	/**
+	 * Returns the user
+	 * @return string|number
+	 */
 	public function getUser()
 	{
 		return $this->user;
 	}
 
+	/**
+	 * Returns the subscription
+	 * @return array
+	 */
 	public function getSubscription()
 	{
 		return $this->subscription;
@@ -99,7 +116,7 @@ class Cashew {
 	public function toPlan($plan, $prorate = true, $maintainTrial = true)
 	{
 		$trialEnd = $this->onTrial() ? $this->getTrialEnd() : null;
-		
+
 		return $this->update(array('plan' => $plan, 'trial_end' => $trialEnd, 'prorate' => $prorate, 'quantity' => $this->subscription['quantity']));
 	}
 
@@ -170,7 +187,7 @@ class Cashew {
 
 		// if new plan passed, then consider it else default to the previous plan
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
-		
+
 		// ending the trial right now
 		$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
 
@@ -181,7 +198,7 @@ class Cashew {
 		$options['prorate'] = false;
 
 		$shouldBeRestored = $this->expired(); // if subscription was resumed after expiration, we will fire an event later
-		
+
 		$this->update(array_merge($options, compact('card')));
 		$this->storage->resume($this->user);
 
