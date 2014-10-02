@@ -10,14 +10,36 @@ use Carbon\Carbon, Config, Event;
  */
 class Cashew {
 
+	/**
+	 * The available status for a subscription
+	 */
 	const STATUS_TRIAL = 'trialing';
 	const STATUS_CANCEL = 'canceled';
 	const STATUS_EXPIRE = 'expired';
 	const STATUS_ACTIVE = 'active';
 
+	/**
+	 * The Gateway instance
+	 * @var Gateway
+	 */
 	protected $gateway;
+
+	/**
+	 * The Storage instance
+	 * @var Storage
+	 */
 	protected $storage;
+
+	/**
+	 * The user id
+	 * @var string|number
+	 */
 	protected $user = null;
+
+	/**
+	 * The subscription for the user
+	 * @var array
+	 */
 	protected $subscription = null;
 
 
