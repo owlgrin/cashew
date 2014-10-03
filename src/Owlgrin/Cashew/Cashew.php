@@ -88,6 +88,12 @@ class Cashew {
 		return $this->subscription;
 	}
 
+	/**
+	 * Creates a new subscription
+	 * @param  string|number $id
+	 * @param  array $options
+	 * @return Cashew
+	 */
 	public function create($id, $options)
 	{
 		if($this->storage->subscription($id)) throw new Exception('Customer already exist');
@@ -101,6 +107,12 @@ class Cashew {
 		return $this;
 	}
 
+	/**
+	 * Update the card for a subscription
+	 * @param  array|string $card
+	 * @param  array  $options
+	 * @return Cashew
+	 */
 	public function card($card, $options = array())
 	{
 		$options['card'] = $card;
@@ -108,11 +120,23 @@ class Cashew {
 		return $this->update($options);
 	}
 
+	/**
+	 * Adds a coupon to subscription
+	 * @param  string $coupon
+	 * @return Cashew
+	 */
 	public function coupon($coupon)
 	{
 		return $this->update(array('coupon' => $coupon, 'plan' => $this->subscription['plan']));
 	}
 
+	/**
+	 * Change the subscription plan
+	 * @param  string  $plan
+	 * @param  boolean $prorate
+	 * @param  boolean $maintainTrial
+	 * @return Cashew
+	 */
 	public function toPlan($plan, $prorate = true, $maintainTrial = true)
 	{
 		$trialEnd = $this->onTrial() ? $this->getTrialEnd() : null;
