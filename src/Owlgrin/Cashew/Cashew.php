@@ -144,21 +144,41 @@ class Cashew {
 		return $this->update(array('plan' => $plan, 'trial_end' => $trialEnd, 'prorate' => $prorate, 'quantity' => $this->subscription['quantity']));
 	}
 
+	/**
+	 * Increments the quantity in subscription
+	 * @param  integer $quantity
+	 * @return Cashew
+	 */
 	public function increment($quantity = 1)
 	{
 		return $this->quantity($this->subscription['quantity'] + $quantity);
 	}
 
+	/**
+	 * Decrements the quantity in subscription
+	 * @param  integer $quantity
+	 * @return Cashew
+	 */
 	public function decrement($quantity = 1)
 	{
 		return $this->quantity($this->subscription['quantity'] - $quantity);
 	}
 
+	/**
+	 * Updates the quantity in the subscription
+	 * @param  integer $quantity
+	 * @return Cashew
+	 */
 	public function quantity($quantity)
 	{
 		return $this->update(array('plan' => $this->subscription['plan'], 'quantity' => $quantity));
 	}
 
+	/**
+	 * Updates the subscription
+	 * @param  array  $options
+	 * @return Cashew
+	 */
 	public function update($options = array())
 	{
 		if( ! $this->subscription) throw new Exception('No subscription found');
@@ -171,12 +191,21 @@ class Cashew {
 		return $this;
 	}
 
+	/**
+	 * Expires a subscription
+	 * @return void
+	 */
 	public function expire()
 	{
 		$this->cancelNow();
 		$this->storage->expire($this->user);
 	}
 
+	/**
+	 * Expires using customer id
+	 * @param  string $customerId
+	 * @return void
+	 */
 	public function expireCustomer($customerId)
 	{
 		// set the subscription by user
@@ -187,11 +216,20 @@ class Cashew {
 		$this->storage->expire($this->user);
 	}
 
+	/**
+	 * Cancels a subscription immediately
+	 * @return Cashew
+	 */
 	public function cancelNow()
 	{
 		return $this->cancel(false);
 	}
 
+	/**
+	 * Cancels a subscription
+	 * @param  boolean $atPeriodEnd
+	 * @return Cashew
+	 */
 	public function cancel($atPeriodEnd = true)
 	{
 		if( ! $this->subscription) throw new Exception('No subscription found');
@@ -205,6 +243,12 @@ class Cashew {
 		return $this;
 	}
 
+	/**
+	 * Resumes a subscription
+	 * @param  array  $options
+	 * @param  string|null $card
+	 * @return void
+	 */
 	public function resume($options = array(), $card = null)
 	{
 		if( ! $this->canceled() and ! $this->expired()) throw new Exception('Cannot be reactivated'); // cannot reactivate if not canceled and not expired
@@ -229,6 +273,12 @@ class Cashew {
 		if($shouldBeRestored) Event::fire('cashew.user.restore', array($this->subscription['user_id']));
 	}
 
+	/**
+	 * Returns the invoices of a customer
+	 * @param  boolean $fromLocal
+	 * @param  integer $count
+	 * @return array
+	 */
 	public function invoices($fromLocal = true, $count = 10)
 	{
 		if( ! $this->subscription) throw new Exception('No subscription found');
@@ -238,6 +288,10 @@ class Cashew {
 			: $this->gateway->invoices($this->subscription['customer_id'], $count);
 	}
 
+	/**
+	 * Returns the upcoming invoice
+	 * @return Invoice
+	 */
 	public function nextInvoice()
 	{
 		if( ! $this->subscription) throw new Exception('No subscription found');
