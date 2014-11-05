@@ -1,6 +1,6 @@
 <?php namespace Owlgrin\Cashew\Gateway;
 
-use Stripe_Customer, Stripe_Invoice, Stripe_Event;
+use Stripe_Customer, Stripe_Invoice, Stripe_InvoiceItem, Stripe_Event;
 use Stripe_ApiConnectionError, Stripe_InvalidRequestError, Stripe_CardError, Stripe_Error;
 use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
@@ -199,6 +199,35 @@ class StripeGateway implements Gateway {
 			$event = Stripe_Event::retrieve($event);
 
 			return new StripeEvent($event);
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	/**
+	 * Add an invoice item.
+	 * @param  array  $item
+	 * @return Invoice
+	 */
+	public function invoiceItem($item)
+	{
+		try
+		{
+			return Stripe_InvoiceItem::create($item);
 		}
 		catch(Stripe_InvalidRequestError $e)
 		{
