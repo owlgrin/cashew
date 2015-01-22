@@ -97,7 +97,7 @@ class LocalInvoice implements Invoice {
 	 */
 	public function total()
 	{
-		return number_format($this->invoice['total'], 2);
+		return $this->invoice['total'];
 	}
 
 	/**
@@ -115,7 +115,7 @@ class LocalInvoice implements Invoice {
 	 */
 	public function subtotal()
 	{
-		return number_format($this->invoice['subtotal'], 2);
+		return $this->invoice['subtotal'];
 	}
 
 	/**
@@ -142,7 +142,7 @@ class LocalInvoice implements Invoice {
 	 */
 	public function discount()
 	{
-		return number_format($this->subtotal() - $this->total(), 2);
+		return $this->subtotal() - $this->total();
 	}
 
 	/**
@@ -160,7 +160,7 @@ class LocalInvoice implements Invoice {
 	 * @return string
 	 */
 	private function _formatted($amount)
-	{
+	{	
 		return number_format(round(money_format('%i', $amount), 2), 2);
 	}
 }

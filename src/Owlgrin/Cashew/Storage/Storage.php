@@ -92,5 +92,13 @@ interface Storage {
 	 * @param  integer $count
 	 * @return array
 	 */
-	public function getInvoices($userId, $count);
+	public function getInvoices($userId, $page, $limit);
+
+	/**
+	 * Returns the expiring card subscriptions
+	 * @param  integer $month
+	 * @param  integer $year
+	 * @return array
+	 */
+	public function getSubscriptionsWithExpiringCard($dates);
 }

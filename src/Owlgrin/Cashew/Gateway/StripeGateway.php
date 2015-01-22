@@ -68,7 +68,7 @@ class StripeGateway implements Gateway {
 			throw new CardException;
 		}
 		catch(Stripe_InvalidRequestError $e)
-		{
+		{	
 			throw new InputException;
 		}
 		catch(Stripe_ApiConnectionError $e)
@@ -166,7 +166,7 @@ class StripeGateway implements Gateway {
 		try
 		{
 			$invoice = Stripe_Invoice::upcoming(compact('customer'));
-
+			
 			return new StripeInvoice($invoice);
 		}
 		catch(Stripe_InvalidRequestError $e)
