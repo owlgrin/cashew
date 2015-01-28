@@ -246,4 +246,33 @@ class StripeGateway implements Gateway {
 			throw new \Exception($e->getMessage());
 		}
 	}
+
+	/**
+	 * Get customer.
+	 * @param  string  $id
+	 * @return Customer
+	 */
+	public function customer($id)
+	{
+		try
+		{
+			return new StripeCustomer(Stripe_Customer::retrieve($id));
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
 }

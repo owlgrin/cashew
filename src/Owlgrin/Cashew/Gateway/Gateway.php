@@ -54,4 +54,11 @@ interface Gateway {
 	 * @return Invoice Item
 	 */
 	public function invoiceItem($item);
+
+	/**
+	 * Get customer
+	 * @param  string $id
+	 * @return Customer
+	 */
+	public function customer($id);
 }
