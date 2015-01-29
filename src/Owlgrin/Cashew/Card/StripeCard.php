@@ -39,4 +39,13 @@ class StripeCard implements Card {
 	{
 		return $this->card ? $this->card['last4'] : null;
 	}
+
+	/**
+	 * Returns the expiry date of the card
+	 * @return string
+	 */
+	public function expiryDate()
+	{
+		return $this->card ? $this->card['exp_year'] . '-' . $this->card['exp_month'] . '-01': null;
+	}
 }

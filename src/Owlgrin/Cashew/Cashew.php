@@ -2,7 +2,7 @@
 
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Gateway\Gateway;
-use Owlgrin\Cashew\Exceptions\Exception;
+use Owlgrin\Cashew\Exceptions as CashewExceptions;
 use Carbon\Carbon, Config, Event;
 
 /**
@@ -55,9 +55,14 @@ class Cashew {
 	 * @return Cashew
 	 */
 	public function user($user)
-	{
+	{	
 		$this->user = $user;
-		$this->subscription = $this->storage->subscription($this->user);
+		
+		if(is_null($subscription = $this->storage->subscription($this->user)))
+			throw new CashewExceptions\NoSubscriptionException;
+						
+		$this->subscription =  $subscription;
+
 		return $this;
 	}
 
@@ -96,7 +101,8 @@ class Cashew {
 	 */
 	public function create($id, $options)
 	{
-		if($this->storage->subscription($id)) throw new Exception('Customer already exist');
+		if($this->storage->subscription($id)) 
+			throw new CashewExceptions\CustomerExistsException;
 
 		$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
 		$customer = $this->gateway->create($options);
@@ -181,7 +187,8 @@ class Cashew {
 	 */
 	public function update($options = array())
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		$customer = $this->gateway->update($this->subscription['customer_id'], $options);
 		$this->storage->update($this->user, $customer);
@@ -232,8 +239,11 @@ class Cashew {
 	 */
 	public function cancel($atPeriodEnd = true)
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
-		if($this->canceled()) throw new Exception('Already canceled');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
+
+		if($this->canceled()) 
+			throw new CashewExceptions\CancelSubscriptionException;
 
 		$subscription = $this->gateway->cancel($this->subscription['customer_id'], $atPeriodEnd);
 		$this->storage->cancel($this->user, $subscription);
@@ -251,7 +261,8 @@ class Cashew {
 	 */
 	public function resume($options = array(), $card = null)
 	{
-		if( ! $this->canceled() and ! $this->expired()) throw new Exception('Cannot be reactivated'); // cannot reactivate if not canceled and not expired
+		if( ! $this->canceled() and ! $this->expired()) 
+			throw new CashewExceptions\ReactivateSubscriptionException; // cannot reactivate if not canceled and not expired
 
 		// if new plan passed, then consider it else default to the previous plan
 		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
@@ -279,13 +290,40 @@ class Cashew {
 	 * @param  integer $count
 	 * @return array
 	 */
-	public function invoices($fromLocal = true, $count = 10)
+	public function invoices($fromLocal = true, $page = 1, $limit = 10)
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		return $fromLocal
-			? $this->storage->getInvoices($this->subscription['user_id'], $count)
-			: $this->gateway->invoices($this->subscription['customer_id'], $count);
+			? $this->storage->getInvoices($this->subscription['user_id'], $page, $limit)
+			: $this->gateway->invoices($this->subscription['customer_id']);
+	}
+
+	/**
+	 * Returns the invoice of a customer
+	 * @param  string $invoiceId
+	 * @return array
+	 */
+	public function invoice($invoiceId)
+	{
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->storage->getInvoice($this->subscription['user_id'], $invoiceId);
+	}
+
+	/**
+	 * Returns the added invoice item of a customer
+	 * @param  array $item
+	 * @return array
+	 */
+	public function addInvoiceItem($item)
+	{
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->gateway->invoiceItem($item);
 	}
 
 	/**
@@ -294,7 +332,8 @@ class Cashew {
 	 */
 	public function nextInvoice()
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		return $this->gateway->nextInvoice($this->subscription['customer_id']);
 	}
@@ -321,7 +360,8 @@ class Cashew {
 
 	public function onTrial()
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		if(is_null($this->subscription['trial_ends_at'])) return false;
 
@@ -330,7 +370,8 @@ class Cashew {
 
 	public function onGrace()
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		if(is_null($this->subscription['subscription_ends_at'])) return false;
 
@@ -340,28 +381,32 @@ class Cashew {
 
 	public function expired()
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		return $this->status() == self::STATUS_EXPIRE;
 	}
 
 	public function subscribed()
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		return $this->status() == self::STATUS_ACTIVE;
 	}
 
 	public function canceled()
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		return $this->status() == self::STATUS_CANCEL;
 	}
 
 	public function onPlan($plan)
 	{
-		if( ! $this->subscription) throw new Exception('No subscription found');
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
 
 		return $this->subscription['plan'] == $plan;
 	}

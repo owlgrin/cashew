@@ -63,7 +63,7 @@ class CashewTableCommand extends Command {
 		$stub = file_get_contents(__DIR__.'/../../../stubs/migration.stub');
 
 		$stub = str_replace('_cashew_subscriptions', Config::get('cashew::tables.subscriptions'), $stub);
-		$stub = str_replace('_cashew_invoices', Config::get('cashew::tables.invoices'), $stub);
+		$stud = str_replace('_cashew_invoices', Config::get('cashew::tables.invoices'), $stub);
 
 		return $stub;
 	}

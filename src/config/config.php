@@ -38,5 +38,7 @@ return array(
 	 * expiring the user. By default, it is set to a sensible
 	 * default of 3 times.
 	 */
-	'attempts' => 3
+	'attempts' => 3,
+
+	'plan' => 'plan-name'
 );
