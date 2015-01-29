@@ -1,6 +1,8 @@
 {
     "name": "owlgrin/cashew",
-    "description": "",
+    "description": "Simplest subscription billing for Laravel using Stripe",
+    "keywords": ["laravel", "stripe", "l4", "subscription", "wrapper"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Mohit Mamoria",
@@ -8,15 +10,14 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "illuminate/support": "4.2.*"
+        "php": ">=5.3.0",
+        "illuminate/support": "4.1.*",
+        "illuminate/routing": "4.1.*",
+        "stripe/stripe-php": "1.*"
     },
     "autoload": {
-        "classmap": [
-            "src/migrations"
-        ],
         "psr-0": {
-            "Owlgrin\\Cashew\\": "src/"
+            "Owlgrin\\Cashew": "src/"
         }
     },
     "minimum-stability": "stable"
