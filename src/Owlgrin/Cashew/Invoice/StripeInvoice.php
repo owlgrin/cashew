@@ -25,13 +25,6 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	{
 		$this->storage = App::make('Owlgrin\Cashew\Storage\Storage');
 		$this->invoice = $invoice;
-		$this->period = [];
-
-		foreach($this->invoice['lines']['data'] as $index => $lineItem) 
-		{
-			if($lineItem['type'] === 'subscription')
-				$this->period = $lineItem['period'];
-		}
 	}
 
 	/**
@@ -90,8 +83,8 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	public function periodStart($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->period['start'])->toFormattedDateString()
-			: $this->period['start'];
+			? Carbon::createFromTimestamp($this->invoice['period_start'])->toFormattedDateString()
+			: $this->invoice['period_start'];
 	}
 
 	/**
@@ -102,8 +95,8 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	public function periodEnd($formatted = true)
 	{
 		return $formatted
-			? Carbon::createFromTimestamp($this->period['end'])->toFormattedDateString()
-			: $this->period['end'];
+			? Carbon::createFromTimestamp($this->invoice['period_end'])->toFormattedDateString()
+			: $this->invoice['period_end'];
 	}
 
 	/**
