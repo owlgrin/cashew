@@ -30,11 +30,11 @@ class SubscriptionUpdateHook implements Hook {
 	{
 		$subscription = $this->storage->subscription($event->customer(), true);
 
-		// if user turns from trialing to active, we will make the status as active
-		if($subscription['status'] == 'trialing' and $event->subscription()->status() == 'active')
-		{
-			$this->storage->updateStatus($subscription['user_id'], $event->subscription()->status());
-		}
+		// // if user turns from trialing to active, we will make the status as active
+		// if($subscription['status'] == 'trialing' and $event->subscription()->status() == 'active')
+		// {
+		// 	$this->storage->updateStatus($subscription['user_id'], $event->subscription()->status());
+		// }
 
 		IlluminateEvent::fire('cashew.subscription.update', array($subscription['user_id'], $event->subscription()));
 	}

@@ -17,7 +17,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'cashew:ping:user:expiring:card';
+	protected $name = 'cashew:ping-user-expiring-card';
 
 	/**
 	 * The console command description.
@@ -43,10 +43,11 @@ class PingUserAboutExpiringCardCommand extends Command {
 			$this->info('Starting mailing....');
 
 			$subscriptions = $this->getSubscriptions();
+			$intervals = explode(',', $this->argument('intervals'));
 			
 			foreach($subscriptions as $index => $subscription) 
 			{
-				if($this->isRequiredToPing($subscription))
+				if($this->isRequiredToPing($subscription['card_exp_date'], $intervals))
 					$this->pingUser($subscription);
 			}
 
@@ -77,29 +78,19 @@ class PingUserAboutExpiringCardCommand extends Command {
 
 	protected function pingUser($subscription)
 	{
-		$intervals = explode(',', $this->option('intervals'));
-
-		$daysLeft = Carbon::createFromFormat('Y-m-d', $subscription['card_exp_date'])->diffInDays(Carbon::today());
-
-		if(in_array($daysLeft, $intervals))
-		{
-			$user = App::make('App\Repos\User\UserRepo')->find($subscription['user_id']);
-			$user['days_left'] = $daysLeft;
-			
-			$this->info('Sending mail to User with ID: ' . $subscription['user_id']);
-			
-			App::make('App\Mailers\UserMailer')->to($user)->cardExpiring(['user' => $user])->send();
-		}
+		$user = App::make('App\Repos\User\UserRepo')->find($subscription['user_id']);
+		$user['days_left'] = $daysLeft;
+		
+		$this->info('Sending mail to User with ID: ' . $subscription['user_id']);
+		
+		App::make('App\Mailers\UserMailer')->to($user)->cardExpiring(['user' => $user])->send();
 	}
 
-	protected function isRequiredToPing($subscription)
+	protected function isRequiredToPing($expiryDate, $intervals)
 	{
-		$expireDate = Carbon::createFromFormat('Y-m-d', $subscription['card_exp_date']);
-		$duration = Carbon::today()->addDays(60);
-		
-		if($expireDate->lte($duration)) return true;
+		$daysLeft = Carbon::createFromFormat('Y-m-d', $expiryDate)->diffInDays(Carbon::today());
 
-		return false;
+		return in_array($daysLeft, $intervals);
 	}
 
 	/**
@@ -110,7 +101,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 	protected function getArguments()
 	{
 		return array(
-			// array('user', InputArgument::REQUIRED, 'Unique identifier of the user to whom you want to ping about expiring card')
+			array('intervals', InputArgument::REQUIRED, '(Array) Intervals on which a required user to be pinged')
 		);
 	}
 
@@ -123,7 +114,6 @@ class PingUserAboutExpiringCardCommand extends Command {
 	{
 		return array(
 			array('user', null, InputOption::VALUE_OPTIONAL, 'Unique identifier of the user to whom you want to ping about expiring card', null),
-			array('intervals', null, InputOption::VALUE_OPTIONAL, '(Array) Intervals on which a required user to be pinged', null),
 		);
 	}
 }
