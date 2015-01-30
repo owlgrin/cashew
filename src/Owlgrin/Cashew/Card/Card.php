@@ -17,4 +17,10 @@ interface Card {
 	 * @return string
 	 */
 	public function lastFour();
+
+	/**
+	 * Returns the expiry date of the card
+	 * @return string
+	 */
+	public function expiryDate();
 }

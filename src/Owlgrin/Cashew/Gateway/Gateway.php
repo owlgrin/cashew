@@ -47,4 +47,18 @@ interface Gateway {
 	 * @return Event
 	 */
 	public function event($event);
+
+	/**
+	 * Update invoice item in invoice
+	 * @param  array $item
+	 * @return Invoice Item
+	 */
+	public function invoiceItem($item);
+
+	/**
+	 * Get customer
+	 * @param  string $id
+	 * @return Customer
+	 */
+	public function customer($id);
 }

@@ -32,9 +32,10 @@ class CashewHookController extends Controller {
 	 * @var array
 	 */
 	private $hooks = array(
-		'invoice.payment_failed' => 'InvoiceFailHook',
-		'invoice.payment_succeeded' => 'InvoiceSuccessHook',
-		'customer.subscription.updated' => 'SubscriptionUpdateHook'
+		'invoice.created'               => 'InvoiceCreateHook',
+		'invoice.payment_failed'        => 'InvoiceFailHook',
+		'invoice.payment_succeeded'     => 'InvoiceSuccessHook',
+		'customer.subscription.updated' => 'SubscriptionUpdateHook',
 	);
 
 	/**
