@@ -43,7 +43,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 			$this->info('Starting mailing....');
 
 			$subscriptions = $this->getSubscriptions();
-			$intervals = explode(',', $this->argument('intervals'));
+			$intervals = $this->argument('intervals');
 			
 			foreach($subscriptions as $index => $subscription) 
 			{
@@ -106,7 +106,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('intervals', InputArgument::REQUIRED, '(Array) Intervals on which a required user to be pinged')
+			array('intervals', InputArgument::IS_ARRAY, '(Array) Intervals on which a required user to be pinged')
 		);
 	}
 
