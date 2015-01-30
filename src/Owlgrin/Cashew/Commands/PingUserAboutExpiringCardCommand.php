@@ -1,5 +1,6 @@
 <?php namespace Owlgrin\Cashew\Commands;
 
+use Illuminate\Support\Facades\Event as IlluminateEvent;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -78,19 +79,23 @@ class PingUserAboutExpiringCardCommand extends Command {
 
 	protected function pingUser($subscription)
 	{
-		$user = App::make('App\Repos\User\UserRepo')->find($subscription['user_id']);
-		$user['days_left'] = $daysLeft;
+		$daysLeft = $this->getDaysDiffFromToday($subscription['card_exp_date']);		
 		
-		$this->info('Sending mail to User with ID: ' . $subscription['user_id']);
+		$this->info('Sending mail to User with ID: ' . $subscription['user_id']);		
 		
-		App::make('App\Mailers\UserMailer')->to($user)->cardExpiring(['user' => $user])->send();
+		IlluminateEvent::fire('cashew.card.expiring', array($subscription['user_id'], $daysLeft));
 	}
 
 	protected function isRequiredToPing($expiryDate, $intervals)
 	{
-		$daysLeft = Carbon::createFromFormat('Y-m-d', $expiryDate)->diffInDays(Carbon::today());
+		$daysLeft = $this->getDaysDiffFromToday($expiryDate);
 
 		return in_array($daysLeft, $intervals);
+	}
+
+	private function getDaysDiffFromToday($date)
+	{
+		return Carbon::createFromFormat('Y-m-d', $date)->diffInDays(Carbon::today());
 	}
 
 	/**
