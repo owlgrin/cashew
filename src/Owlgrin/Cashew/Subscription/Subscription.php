@@ -7,6 +7,7 @@ interface Subscription {
 	public function quantity();
 	public function status();
 	public function trialEnd();
+	public function currentStart();
 	public function currentEnd();
 	public function end();
 }

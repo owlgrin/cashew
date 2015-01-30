@@ -345,6 +345,32 @@ class DbStorage implements Storage {
 	}
 
 	/**
+	 * Returns the last invoice
+	 * @param  string  $userId
+	 * @return array
+	 */
+	public function getLastInvoice($userId)
+	{
+		try
+		{
+			$invoice = DB::table(Config::get('cashew::tables.invoices'))
+				->where('user_id', $userId)
+				->orderBy('created_at', 'DESC')
+				->first();
+			
+			$invoice['subtotal'] = (float) $invoice['subtotal'];
+			$invoice['total']    = (float) $invoice['total'];
+			$invoice['discount'] = (float) $invoice['discount'];
+
+			return new LocalInvoice($invoice);
+		}
+		catch(PDOException $e)
+		{
+			throw new CashewExceptions\DatabaseException;			
+		}
+	}
+
+	/**
 	 * Returns expiring card subscriptions
 	 * @param  integer $month
 	 * @param  integer $year

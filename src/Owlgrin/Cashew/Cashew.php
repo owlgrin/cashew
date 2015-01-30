@@ -314,6 +314,18 @@ class Cashew {
 	}
 
 	/**
+	 * Returns the last invoice of a customer
+	 * @return array
+	 */
+	public function lastInvoice()
+	{
+		if( ! $this->subscription) 
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->storage->getLastInvoice($this->subscription['user_id']);
+	}
+
+	/**
 	 * Returns the added invoice item of a customer
 	 * @param  array $item
 	 * @return array
