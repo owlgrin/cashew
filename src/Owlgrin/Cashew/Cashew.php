@@ -212,8 +212,8 @@ class Cashew {
 		$subscription = $this->storage->subscription($customerId, true);
 		$this->user($subscription['user_id']);
 
-		$this->cancelNow();
-		$this->storage->expire($this->user);
+		// and then call the method which already expires using user
+		$this->expire();
 	}
 
 	/**
