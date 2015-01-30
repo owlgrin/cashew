@@ -1,5 +1,6 @@
 <?php namespace Owlgrin\Cashew\Commands;
 
+use Illuminate\Support\Facades\Event as IlluminateEvent;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -38,22 +39,22 @@ class PingUserAboutExpiringCardCommand extends Command {
 	 */
 	public function fire()
 	{
-		try 
+		try
 		{
 			$this->info('Starting mailing....');
 
 			$subscriptions = $this->getSubscriptions();
 			$intervals = $this->argument('intervals');
-			
-			foreach($subscriptions as $index => $subscription) 
+
+			foreach($subscriptions as $index => $subscription)
 			{
 				if($this->isRequiredToPing($subscription['card_exp_date'], $intervals))
 					$this->pingUser($subscription);
 			}
 
 			$this->info('Mailed successfully to required users');
-		} 
-		catch(\Exception $e) 
+		}
+		catch(\Exception $e)
 		{
 			$this->error($e);
 		}
@@ -67,7 +68,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 		{
 			return DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('last_four', '<>', 'null')
-				->get();			
+				->get();
 		}
 
 		return DB::table(Config::get('cashew::tables.subscriptions'))
@@ -78,12 +79,11 @@ class PingUserAboutExpiringCardCommand extends Command {
 
 	protected function pingUser($subscription)
 	{
-		$user = App::make('App\Repos\User\UserRepo')->find($subscription['user_id']);
-		$user['days_left'] = $this->getDaysDiffFromToday($subscription['card_exp_date']);
-		
-		$this->info('Sending mail to User with ID: ' . $subscription['user_id']);
-		
-		App::make('App\Mailers\UserMailer')->to($user)->cardExpiring(['user' => $user])->send();
+		$daysLeft = $this->getDaysDiffFromToday($subscription['card_exp_date']);
+
+		$this->info('Pinging about expiring card to user with ID: ' . $subscription['user_id']);
+
+		IlluminateEvent::fire('cashew.card.expiring', array($subscription['user_id'], $daysLeft));
 	}
 
 	protected function isRequiredToPing($expiryDate, $intervals)
