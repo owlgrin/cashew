@@ -248,6 +248,7 @@ class Cashew {
 		$subscription = $this->gateway->cancel($this->subscription['customer_id'], $atPeriodEnd);
 		$this->storage->cancel($this->user, $subscription);
 
+		// refreshing subscription to take the updated value
 		$this->refreshSubscription();
 
 		return $this;
