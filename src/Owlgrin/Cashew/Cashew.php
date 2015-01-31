@@ -284,6 +284,7 @@ class Cashew {
 	{
 		if( ! $this->subscription) throw new Exception('No subscription found');
 
+		// we are allowing invoices to be fetched from local copy because that is super fast
 		return $fromLocal
 			? $this->storage->getInvoices($this->subscription['user_id'], $count)
 			: $this->gateway->invoices($this->subscription['customer_id'], $count);
