@@ -60,17 +60,22 @@ class PingUserAboutExpiringCardCommand extends Command {
 		}
 	}
 
+	/**
+	 * Returns the list of subscriptions based on input
+	 *
+	 * @return array
+	 */
 	protected function getSubscriptions()
 	{
-		$user = $this->option('user');
-
-		if(is_null($user))
+		// If no user passed, get all subscriptions
+		if(is_null($user = $this->option('user')))
 		{
 			return DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('last_four', '<>', 'null')
 				->get();
 		}
 
+		// Otherwise, return the subscription for that particular user only
 		return DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', $user)
 				->where('last_four', '<>', 'null')
