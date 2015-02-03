@@ -40,5 +40,8 @@ return array(
 	 */
 	'attempts' => 3,
 
+	/**
+	 * Default plan to which the newly created user should be subscribed to.
+	 */
 	'plan' => 'plan-name'
 );
