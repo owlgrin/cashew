@@ -352,6 +352,11 @@ class Cashew {
 		return $this->gateway->nextInvoice($this->subscription['customer_id']);
 	}
 
+	/**
+	 * Returns the status of subscription
+	 *
+	 * @return string
+	 */
 	public function status()
 	{
 		return $this->subscription['status'];
