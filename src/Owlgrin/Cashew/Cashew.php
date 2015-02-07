@@ -362,11 +362,21 @@ class Cashew {
 		return $this->subscription['status'];
 	}
 
+	/**
+	 * Returns whether a subscription is active or not
+	 *
+	 * @return boolean
+	 */
 	public function active()
 	{
 		return $this->onTrial() or $this->onGrace() or $this->subscribed();
 	}
 
+	/**
+	 * Returns whether a subscription is inactive or not
+	 *
+	 * @return boolean
+	 */
 	public function inactive()
 	{
 		return ! $this->active();
