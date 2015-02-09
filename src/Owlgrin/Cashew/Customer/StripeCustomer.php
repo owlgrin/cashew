@@ -59,7 +59,7 @@ class StripeCustomer implements Customer {
 	 */
 	public function card()
 	{
-		return new StripeCard($this->customer['cards']['count'] > 0
+		return new StripeCard($this->customer['cards']['total_count'] > 0
 			? $this->customer['cards']['data'][0]
 			: null);
 	}
