@@ -298,18 +298,14 @@ class DbStorage implements Storage {
 				->orderBy('created_at', 'DESC');
 			
 			$invoices = $query->get();	
-			$paginated_invoices = $query->skip($limit*($page-1))->take($limit)->get();
+			$paginatedInvoices = $query->skip($limit*($page-1))->take($limit)->get();
 			
-			foreach($paginated_invoices as $key => $invoice) 
+			foreach($paginatedInvoices as $key => $invoice) 
 			{
-				$invoice['subtotal'] = (float) $invoice['subtotal'];
-				$invoice['total']    = (float) $invoice['total'];
-				$invoice['discount'] = (float) $invoice['discount'];
-				
-				$paginated_invoices[$key] = new LocalInvoice($invoice);
+				$paginatedInvoices[$key] = new LocalInvoice($invoice);
 			}
 			
-			return ['data' => $paginated_invoices, 'meta' => ['total' => count($invoices)]];
+			return ['data' => $paginatedInvoices, 'meta' => ['total' => count($invoices)]];
 		}
 		catch(PDOException $e)
 		{
@@ -331,10 +327,6 @@ class DbStorage implements Storage {
 				->where('invoice_id', $invoiceId)
 				->where('user_id', $userId)
 				->first();
-
-			$invoice['subtotal'] = (float) $invoice['subtotal'];
-			$invoice['total']    = (float) $invoice['total'];
-			$invoice['discount'] = (float) $invoice['discount'];
 
 			return new LocalInvoice($invoice);
 		}
@@ -358,11 +350,7 @@ class DbStorage implements Storage {
 				->orderBy('created_at', 'DESC')
 				->first();
 			
-			$invoice['subtotal'] = (float) $invoice['subtotal'];
-			$invoice['total']    = (float) $invoice['total'];
-			$invoice['discount'] = (float) $invoice['discount'];
-
-			return new LocalInvoice($invoice);
+			return is_null($invoice) ? null : new LocalInvoice($invoice);
 		}
 		catch(PDOException $e)
 		{
