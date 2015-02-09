@@ -446,4 +446,15 @@ class Cashew {
 			else return null;
 		}
 	}
+
+	public function extendTrial($options = array())
+	{
+		// if new plan passed, then consider it else default to the previous plan
+		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
+
+		// ending the trial right now
+		$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
+
+		return $this->update($options);
+	}
 }
