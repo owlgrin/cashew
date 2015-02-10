@@ -382,6 +382,11 @@ class Cashew {
 		return ! $this->active();
 	}
 
+	/**
+	 * Checks whether the user has card on file or not?
+	 *
+	 * @return boolean
+	 */
 	public function hasCard()
 	{
 		return is_null($this->subscription['last_four']) ? false : true;
