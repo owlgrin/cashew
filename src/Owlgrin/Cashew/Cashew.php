@@ -392,6 +392,11 @@ class Cashew {
 		return is_null($this->subscription['last_four']) ? false : true;
 	}
 
+	/**
+	 * Checks whether the user is on trial period.
+	 *
+	 * @return boolean
+	 */
 	public function onTrial()
 	{
 		if( ! $this->subscription) 
