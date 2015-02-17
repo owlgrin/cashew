@@ -56,9 +56,6 @@ class DbStorage implements Storage {
 			return $id;
 		}
 		catch(PDOException $e)
-<<<<<<< HEAD
-		{dd($e->getMessage());
-=======
 		{
 			throw new CashewExceptions\DatabaseException;
 		}
@@ -80,7 +77,6 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
->>>>>>> e09fc8fbe3fda458fe877f7d739a5db2b73fa8b5
 			throw new CashewExceptions\DatabaseException;
 		}
 	}
@@ -322,20 +318,6 @@ class DbStorage implements Storage {
 				->orderBy('created_at', 'DESC');
 
 			$invoices = $query->get();
-<<<<<<< HEAD
-			$paginated_invoices = $query->skip($limit*($page-1))->take($limit)->get();
-
-			foreach($paginated_invoices as $key => $invoice)
-			{
-				$invoice['subtotal'] = (float) $invoice['subtotal'];
-				$invoice['total']    = (float) $invoice['total'];
-				$invoice['discount'] = (float) $invoice['discount'];
-
-				$paginated_invoices[$key] = new LocalInvoice($invoice);
-			}
-
-			return ['data' => $paginated_invoices, 'meta' => ['total' => count($invoices)]];
-=======
 			$paginatedInvoices = $query->skip($limit*($page-1))->take($limit)->get();
 
 			foreach($paginatedInvoices as $key => $invoice)
@@ -344,7 +326,6 @@ class DbStorage implements Storage {
 			}
 
 			return ['data' => $paginatedInvoices, 'meta' => ['total' => count($invoices)]];
->>>>>>> e09fc8fbe3fda458fe877f7d739a5db2b73fa8b5
 		}
 		catch(PDOException $e)
 		{
@@ -372,8 +353,6 @@ class DbStorage implements Storage {
 		catch(PDOException $e)
 		{
 			throw new CashewExceptions\DatabaseException;
-<<<<<<< HEAD
-=======
 		}
 	}
 
@@ -396,7 +375,6 @@ class DbStorage implements Storage {
 		catch(PDOException $e)
 		{
 			throw new CashewExceptions\DatabaseException;
->>>>>>> e09fc8fbe3fda458fe877f7d739a5db2b73fa8b5
 		}
 	}
 
