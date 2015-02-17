@@ -68,7 +68,7 @@ class CashewServiceProvider extends ServiceProvider {
 		$this->commands('command.cashew.subscribe');
 		$this->commands('command.cashew.cancel');
 		$this->commands('command.cashew.extend.trial');
-		
+
 		// we will bind as singleton as we want just one instance of the package
 		// throughout the processing of whole request
 		$this->app->singleton('cashew', 'Owlgrin\Cashew\Cashew');

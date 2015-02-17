@@ -23,7 +23,7 @@ class DbStorage implements Storage {
 	 */
 	public function subscription($id, $byCustomer = false)
 	{
-		if( ! $id) 
+		if( ! $id)
 			throw new CashewExceptions\InputException('Cannot fetch subscription');
 
 		return $byCustomer ? $this->subscriptionByCustomer($id) : $this->subscriptionByUser($id);
@@ -56,8 +56,8 @@ class DbStorage implements Storage {
 			return $id;
 		}
 		catch(PDOException $e)
-		{
-			throw new CashewExceptions\DatabaseException;			
+		{dd($e->getMessage());
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -82,7 +82,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -95,7 +95,7 @@ class DbStorage implements Storage {
 	public function subscribe($userId, Subscription $subscription)
 	{
 		try
-		{			
+		{
 			DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', '=', $userId)
 				->update(array(
@@ -111,7 +111,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -145,7 +145,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -168,7 +168,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -192,7 +192,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -219,7 +219,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -244,7 +244,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -279,7 +279,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -296,24 +296,24 @@ class DbStorage implements Storage {
 			$query = DB::table(Config::get('cashew::tables.invoices'))
 				->where('user_id', $userId)
 				->orderBy('created_at', 'DESC');
-			
-			$invoices = $query->get();	
+
+			$invoices = $query->get();
 			$paginated_invoices = $query->skip($limit*($page-1))->take($limit)->get();
-			
-			foreach($paginated_invoices as $key => $invoice) 
+
+			foreach($paginated_invoices as $key => $invoice)
 			{
 				$invoice['subtotal'] = (float) $invoice['subtotal'];
 				$invoice['total']    = (float) $invoice['total'];
 				$invoice['discount'] = (float) $invoice['discount'];
-				
+
 				$paginated_invoices[$key] = new LocalInvoice($invoice);
 			}
-			
+
 			return ['data' => $paginated_invoices, 'meta' => ['total' => count($invoices)]];
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -340,7 +340,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -361,7 +361,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -380,7 +380,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 
@@ -399,7 +399,7 @@ class DbStorage implements Storage {
 		}
 		catch(PDOException $e)
 		{
-			throw new CashewExceptions\DatabaseException;			
+			throw new CashewExceptions\DatabaseException;
 		}
 	}
 }
