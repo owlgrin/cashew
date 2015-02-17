@@ -49,6 +49,40 @@ class StripeGateway implements Gateway {
 	}
 
 	/**
+	 * Deletes the subscription
+	 * @param  string $customer
+	 */
+	public function delete($customer)
+	{
+		try
+		{
+			Stripe_Customer::retrieve($customer)->delete();
+
+			return new StripeCustomer($customer);
+		}
+		catch(Stripe_CardError $e)
+		{
+			throw new CardException;
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	/**
 	 * Updates a subscription
 	 * @param  string $customer
 	 * @param  array  $options
@@ -68,7 +102,7 @@ class StripeGateway implements Gateway {
 			throw new CardException;
 		}
 		catch(Stripe_InvalidRequestError $e)
-		{	
+		{
 			throw new InputException;
 		}
 		catch(Stripe_ApiConnectionError $e)
@@ -166,7 +200,7 @@ class StripeGateway implements Gateway {
 		try
 		{
 			$invoice = Stripe_Invoice::upcoming(compact('customer'));
-			
+
 			return new StripeInvoice($invoice);
 		}
 		catch(Stripe_InvalidRequestError $e)
