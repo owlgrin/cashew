@@ -25,6 +25,13 @@ interface Storage {
 	public function create($userId, Customer $customer);
 
 	/**
+	 * Deletes the subscription for a user
+	 * @param  string $userId
+	 * @param  string $customerId
+	 */
+	public function delete($userId, $customerId);
+
+	/**
 	 * Updates the customer details for a user
 	 * @param  string   $userId
 	 * @param  Customer $customer

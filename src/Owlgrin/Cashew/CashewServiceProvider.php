@@ -62,12 +62,19 @@ class CashewServiceProvider extends ServiceProvider {
 			return new \Owlgrin\Cashew\Commands\CashewCancelCommand;
 		});
 
+		// binding the command to allow user to ping about expiring card.
+		$this->app->bindShared('command.cashew.ping.about.expiring.card', function($app)
+		{
+			return new \Owlgrin\Cashew\Commands\PingUserAboutExpiringCardCommand;
+		});
+
 		//	telling laravel what we are providing to the app using the package
 		$this->commands('command.cashew.table');
 		$this->commands('command.cashew.expire');
 		$this->commands('command.cashew.subscribe');
 		$this->commands('command.cashew.cancel');
 		$this->commands('command.cashew.extend.trial');
+		$this->commands('command.cashew.ping.about.expiring.card');
 
 		// we will bind as singleton as we want just one instance of the package
 		// throughout the processing of whole request

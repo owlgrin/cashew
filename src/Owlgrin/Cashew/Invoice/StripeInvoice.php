@@ -15,6 +15,12 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	 */
 	protected $invoice;
 
+	/**
+	 * Period of invoice
+	 * @var array
+	 */
+	protected $period;
+
 	public function __construct($invoice)
 	{
 		$this->storage = App::make('Owlgrin\Cashew\Storage\Storage');

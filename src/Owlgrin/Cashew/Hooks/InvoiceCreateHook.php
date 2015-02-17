@@ -28,14 +28,6 @@ class InvoiceCreateHook implements Hook {
 	public function handle(Event $event)
 	{
 		$subscription = $this->storage->subscription($event->customer(), true);
-
-		// if( ! is_null($subscription['trial_ends_at']))
-		// {
-		// 	$trialEndsAt = Carbon::createFromFormat('Y-m-d H:i:s', $subscription['trial_ends_at'])->startOfDay();
-		// 	$invoiceDate = Carbon::createFromTimestamp($event->invoice()->date())->startOfDay();
-			
-		// 	if( ! $trialEndsAt->lt($invoiceDate)) return;
-		// }
 		
 		IlluminateEvent::fire('cashew.invoice.created', array($subscription['user_id'], $event->invoice()));
 	}

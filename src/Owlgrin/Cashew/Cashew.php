@@ -114,6 +114,21 @@ class Cashew {
 	}
 
 	/**
+	 * Deletes a subscription
+	 */
+	public function delete()
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		$this->gateway->delete($this->subscription['customer_id']);
+		$this->storage->delete($this->user, $this->subscription['customer_id']);
+
+		$this->user = null;
+		$this->subscription = null;
+	}
+
+	/**
 	 * Update the card for a subscription
 	 * @param  array|string $card
 	 * @param  array  $options
@@ -314,6 +329,18 @@ class Cashew {
 	}
 
 	/**
+	 * Returns the last invoice of a customer
+	 * @return array
+	 */
+	public function lastInvoice()
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->storage->getLastInvoice($this->subscription['user_id']);
+	}
+
+	/**
 	 * Returns the added invoice item of a customer
 	 * @param  array $item
 	 * @return array
@@ -433,5 +460,16 @@ class Cashew {
 			}
 			else return null;
 		}
+	}
+
+	public function extendTrial($options = array())
+	{
+		// if new plan passed, then consider it else default to the previous plan
+		$options['plan'] = isset($options['plan']) ? $options['plan'] : $this->subscription['plan'];
+
+		// ending the trial right now
+		$options['trial_end'] = $this->getTrialEnd(isset($options['trial_end']) ? $options['trial_end'] : null);
+
+		return $this->update($options);
 	}
 }

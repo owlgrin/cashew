@@ -56,7 +56,31 @@ class DbStorage implements Storage {
 			return $id;
 		}
 		catch(PDOException $e)
+<<<<<<< HEAD
 		{dd($e->getMessage());
+=======
+		{
+			throw new CashewExceptions\DatabaseException;
+		}
+	}
+
+	/**
+	 * Deletes a subscription
+	 * @param  string $userId
+	 * @param  string $customerId
+	 */
+	public function delete($userId, $customerId)
+	{
+		try
+		{
+			DB::table(Config::get('cashew::tables.subscriptions'))
+				->where('user_id', '=', $userId)
+				->where('customer_id', '=', $customerId)
+				->delete();
+		}
+		catch(PDOException $e)
+		{
+>>>>>>> e09fc8fbe3fda458fe877f7d739a5db2b73fa8b5
 			throw new CashewExceptions\DatabaseException;
 		}
 	}
@@ -298,6 +322,7 @@ class DbStorage implements Storage {
 				->orderBy('created_at', 'DESC');
 
 			$invoices = $query->get();
+<<<<<<< HEAD
 			$paginated_invoices = $query->skip($limit*($page-1))->take($limit)->get();
 
 			foreach($paginated_invoices as $key => $invoice)
@@ -310,6 +335,16 @@ class DbStorage implements Storage {
 			}
 
 			return ['data' => $paginated_invoices, 'meta' => ['total' => count($invoices)]];
+=======
+			$paginatedInvoices = $query->skip($limit*($page-1))->take($limit)->get();
+
+			foreach($paginatedInvoices as $key => $invoice)
+			{
+				$paginatedInvoices[$key] = new LocalInvoice($invoice);
+			}
+
+			return ['data' => $paginatedInvoices, 'meta' => ['total' => count($invoices)]];
+>>>>>>> e09fc8fbe3fda458fe877f7d739a5db2b73fa8b5
 		}
 		catch(PDOException $e)
 		{
@@ -332,15 +367,36 @@ class DbStorage implements Storage {
 				->where('user_id', $userId)
 				->first();
 
-			$invoice['subtotal'] = (float) $invoice['subtotal'];
-			$invoice['total']    = (float) $invoice['total'];
-			$invoice['discount'] = (float) $invoice['discount'];
-
 			return new LocalInvoice($invoice);
 		}
 		catch(PDOException $e)
 		{
 			throw new CashewExceptions\DatabaseException;
+<<<<<<< HEAD
+=======
+		}
+	}
+
+	/**
+	 * Returns the last invoice
+	 * @param  string  $userId
+	 * @return array
+	 */
+	public function getLastInvoice($userId)
+	{
+		try
+		{
+			$invoice = DB::table(Config::get('cashew::tables.invoices'))
+				->where('user_id', $userId)
+				->orderBy('created_at', 'DESC')
+				->first();
+
+			return is_null($invoice) ? null : new LocalInvoice($invoice);
+		}
+		catch(PDOException $e)
+		{
+			throw new CashewExceptions\DatabaseException;
+>>>>>>> e09fc8fbe3fda458fe877f7d739a5db2b73fa8b5
 		}
 	}
 
