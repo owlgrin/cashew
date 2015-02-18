@@ -354,6 +354,20 @@ class Cashew {
 	}
 
 	/**
+	 * Returns the updated invoice item of a customer
+	 * @param  string $itemId
+	 * @param  array $item
+	 * @return array
+	 */
+	public function updateInvoiceItem($itemId, $item)
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->gateway->updateInvoiceItem($itemId, $item);
+	}
+
+	/**
 	 * Returns the upcoming invoice
 	 * @return Invoice
 	 */
