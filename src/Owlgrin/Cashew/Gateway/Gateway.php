@@ -12,6 +12,12 @@ interface Gateway {
 	public function create($options);
 
 	/**
+	 * Deletes a subscription
+	 * @param  string $customer
+	 */
+	public function delete($customer);
+
+	/**
 	 * Updates a customer
 	 * @param  string $customer
 	 * @param  array $options

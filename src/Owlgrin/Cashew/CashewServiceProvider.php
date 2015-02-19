@@ -1,6 +1,7 @@
 <?php namespace Owlgrin\Cashew;
 
 use Illuminate\Support\ServiceProvider;
+
 use Config;
 use Stripe;
 
@@ -74,7 +75,7 @@ class CashewServiceProvider extends ServiceProvider {
 		$this->commands('command.cashew.cancel');
 		$this->commands('command.cashew.extend.trial');
 		$this->commands('command.cashew.ping.about.expiring.card');
-		
+
 		// we will bind as singleton as we want just one instance of the package
 		// throughout the processing of whole request
 		$this->app->singleton('cashew', 'Owlgrin\Cashew\Cashew');

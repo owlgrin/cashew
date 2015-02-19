@@ -46,7 +46,7 @@ class CashewExtendTrialCommand extends Command {
 			
 			$options = array('trial_end' => $days);
 			
-			Cashew::user($user)->resume($options);
+			Cashew::user($user)->extendTrial($options);
 			
 			$this->info('Trial exteded successfully!');
 		} 
