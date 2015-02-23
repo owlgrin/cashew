@@ -465,6 +465,12 @@ class Cashew {
 		return $this->subscription['plan'] == $plan;
 	}
 
+	/**
+	 * Returns the timestamp for trial end based on number of days
+	 *
+	 * @param  number|'now' $days
+	 * @return number|'now'
+	 */
 	private function getTrialEnd($days = null)
 	{
 		// special case for ending trial right now
