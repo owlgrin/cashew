@@ -457,6 +457,12 @@ class Cashew {
 		return $this->status() == self::STATUS_CANCEL;
 	}
 
+	/**
+	 * Check is subscription is for a given plan
+	 *
+	 * @param  string $plan
+	 * @return boolean
+	 */
 	public function onPlan($plan)
 	{
 		if( ! $this->subscription)
