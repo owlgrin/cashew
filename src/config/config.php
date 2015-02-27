@@ -9,12 +9,12 @@ return array(
 		 * This is the secret key of your Stripe account. Please take care that
 		 * this key should never be revealed publicly.
 		 */
-		'secret' => 'your-secret-key-here',
+		'secret' => getenv('CASHEW_SECRET_KEY') ?: 'your-secret-key-here',
 		/**
 		 * This is the publishable key of your Stripe account. This key can be used
 		 * on public pages, such as javascript code.
 		 */
-		'publishable' => 'your-publishable-key-here'
+		'publishable' => getenv('CASHEW_PUBLISH_KEY') ?: 'your-publishable-key-here'
 	),
 	/**
 	 * The following options tell Cashew to work seamlessly with
@@ -43,5 +43,5 @@ return array(
 	/**
 	 * Default plan to which the newly created user should be subscribed to.
 	 */
-	'plan' => 'plan-name'
+	'plan' => getenv('CASHEW_PLAN') ?: 'plan-name'
 );
