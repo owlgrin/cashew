@@ -39,22 +39,22 @@ class PingUserAboutExpiringCardCommand extends Command {
 	 */
 	public function fire()
 	{
-		try 
+		try
 		{
 			$this->info('Starting mailing....');
 
 			$subscriptions = $this->getSubscriptions();
 			$intervals = explode(',', $this->argument('intervals'));
-			
-			foreach($subscriptions as $index => $subscription) 
+
+			foreach($subscriptions as $index => $subscription)
 			{
 				if($this->isRequiredToPing($subscription['card_exp_date'], $intervals))
 					$this->pingUser($subscription);
 			}
 
 			$this->info('Mailed successfully to required users');
-		} 
-		catch(\Exception $e) 
+		}
+		catch(\Exception $e)
 		{
 			$this->error($e);
 		}
@@ -68,7 +68,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 		{
 			return DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('last_four', '<>', 'null')
-				->get();			
+				->get();
 		}
 
 		return DB::table(Config::get('cashew::tables.subscriptions'))
@@ -79,10 +79,10 @@ class PingUserAboutExpiringCardCommand extends Command {
 
 	protected function pingUser($subscription)
 	{
-		$daysLeft = $this->getDaysDiffFromToday($subscription['card_exp_date']);		
-		
-		$this->info('Sending mail to User with ID: ' . $subscription['user_id']);		
-		
+		$daysLeft = $this->getDaysDiffFromToday($subscription['card_exp_date']);
+
+		$this->info('Sending mail to User with ID: ' . $subscription['user_id']);
+
 		IlluminateEvent::fire('cashew.card.expiring', array($subscription['user_id'], $daysLeft));
 	}
 

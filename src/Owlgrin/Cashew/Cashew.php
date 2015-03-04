@@ -399,6 +399,17 @@ class Cashew {
 		return is_null($this->subscription['last_four']) ? false : true;
 	}
 
+	public function hasActiveCard()
+	{
+		if( ! is_null($this->subscription['card_exp_date']))
+		{
+			return Carbon::createFromFormat('Y-m-d', $this->subscription['card_exp_date'])
+					->gt(Carbon::today()) && $this->hasCard();
+		}
+
+		return $this->hasCard();
+	}
+
 	public function onTrial()
 	{
 		if( ! $this->subscription)
