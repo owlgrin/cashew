@@ -68,6 +68,12 @@ class CashewServiceProvider extends ServiceProvider {
 			return new \Owlgrin\Cashew\Commands\PingUserAboutExpiringCardCommand;
 		});
 
+		// binding the command to allow user to switch subscription plan.
+		$this->app->bindShared('command.cashew.switch.plan', function($app)
+		{
+			return new \Owlgrin\Cashew\Commands\CashewSwitchPlanCommand;
+		});
+
 		//	telling laravel what we are providing to the app using the package
 		$this->commands('command.cashew.table');
 		$this->commands('command.cashew.expire');
@@ -75,6 +81,7 @@ class CashewServiceProvider extends ServiceProvider {
 		$this->commands('command.cashew.cancel');
 		$this->commands('command.cashew.extend.trial');
 		$this->commands('command.cashew.ping.about.expiring.card');
+		$this->commands('command.cashew.switch.plan');
 
 		// we will bind as singleton as we want just one instance of the package
 		// throughout the processing of whole request

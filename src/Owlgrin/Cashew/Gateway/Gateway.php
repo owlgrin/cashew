@@ -55,11 +55,19 @@ interface Gateway {
 	public function event($event);
 
 	/**
-	 * Update invoice item in invoice
+	 * Add invoice item in invoice
 	 * @param  array $item
 	 * @return Invoice Item
 	 */
 	public function invoiceItem($item);
+
+	/**
+	 * Update invoice item in invoice
+	 * @param  string $itemId
+	 * @param  array $item
+	 * @return Invoice Item
+	 */
+	public function updateInvoiceItem($itemId, $item);
 
 	/**
 	 * Get customer

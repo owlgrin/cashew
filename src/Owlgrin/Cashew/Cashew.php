@@ -356,6 +356,20 @@ class Cashew {
 	}
 
 	/**
+	 * Returns the updated invoice item of a customer
+	 * @param  string $itemId
+	 * @param  array $item
+	 * @return array
+	 */
+	public function updateInvoiceItem($itemId, $item)
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->gateway->updateInvoiceItem($itemId, $item);
+	}
+
+	/**
 	 * Returns the upcoming invoice
 	 * @return Invoice
 	 */
@@ -405,6 +419,22 @@ class Cashew {
 	public function hasCard()
 	{
 		return is_null($this->subscription['last_four']) ? false : true;
+	}
+
+	/**
+	 * Checks whether the user has an active card on file or not?
+	 *
+	 * @return boolean
+	 */
+	public function hasActiveCard()
+	{
+		if( ! is_null($this->subscription['card_exp_date']))
+		{
+			return Carbon::createFromFormat('Y-m-d', $this->subscription['card_exp_date'])
+					->gt(Carbon::today()) && $this->hasCard();
+		}
+
+		return $this->hasCard();
 	}
 
 	/**

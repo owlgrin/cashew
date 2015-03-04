@@ -282,6 +282,41 @@ class StripeGateway implements Gateway {
 	}
 
 	/**
+	 * Update an invoice item.
+	 * @param  string  $itemId
+	 * @param  array  $item
+	 * @return Invoice
+	 */
+	public function updateInvoiceItem($itemId, $item)
+	{
+		try
+		{
+			$invoiceItem = Stripe_InvoiceItem::retrieve($itemId);
+
+			$invoiceItem->description = $item['description'];
+			$invoiceItem->amount = $item['amount'];
+
+			return $invoiceItem->save();
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	/**
 	 * Get customer.
 	 * @param  string  $id
 	 * @return Customer

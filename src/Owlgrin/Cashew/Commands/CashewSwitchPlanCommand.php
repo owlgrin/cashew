@@ -8,21 +8,21 @@ use Cashew;
 /**
  * Command to expire users who ended their grace period
  */
-class CashewSubscribeCommand extends Command {
+class CashewSwitchPlanCommand extends Command {
 
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'cashew:subscribe';
+	protected $name = 'cashew:switch-plan';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Command to subscribe an user in Cashew(Stripe)';
+	protected $description = 'Command to switch an user\'s subscription plan in Cashew(Stripe)';
 	/**
 	 * Create a new command instance.
 	 *
@@ -38,18 +38,19 @@ class CashewSubscribeCommand extends Command {
 	{
 		try
 		{
-			$this->info('Starting subscribing....');
-
 			$user = $this->argument('user');
 			$plan = $this->argument('plan');
 
-			Cashew::create($user, array(
-				'description' => '[Registered] Customer with User ID: ' . $user,
-				'plan' => $plan,
-				'quantity' => '1'
-			));
+			$this->info('Checking whether user is subscribed or not....');
 
-			$this->info('Subscribed successfully!');
+			if(Cashew::user($user)->getSubscription())
+			{
+				$this->info('Starting switching....');
+
+				Cashew::toPlan($plan);
+
+				$this->info('Switched successfully!');
+			}
 		}
 		catch(\Exception $e)
 		{
@@ -65,8 +66,8 @@ class CashewSubscribeCommand extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('user', InputArgument::REQUIRED, 'Unique identifier of the user to be subscribed'),
-			array('plan', InputArgument::REQUIRED, 'Stripe plan to which the user to be subscribed')
+			array('user', InputArgument::REQUIRED, 'Unique identifier of the user whose subscription plan to be switched'),
+			array('plan', InputArgument::REQUIRED, 'Stripe plan to which the user to be switched')
 		);
 	}
 

@@ -181,4 +181,9 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	{
 		return number_format(round(money_format('%i', $amount), 2), 2);
 	}
+
+	public function lines()
+	{
+		return $this->invoice['lines']['data'];
+	}
 }
