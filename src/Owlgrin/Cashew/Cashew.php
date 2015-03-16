@@ -531,6 +531,12 @@ class Cashew {
 		}
 	}
 
+	/**
+	 * Extends trial period by given number of days
+	 *
+	 * @param  array  $options 
+	 * @return Owlgrin\Cashew\Cashew
+	 */
 	public function extendTrial($options = array())
 	{
 		// if new plan passed, then consider it else default to the previous plan
