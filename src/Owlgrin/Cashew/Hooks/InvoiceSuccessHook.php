@@ -47,7 +47,7 @@ class InvoiceSuccessHook implements Hook {
 
 		if($this->cashew->user($subscription['user_id'])->hasCard())
 		{
-			$this->storage->updateStatus($subscription['user_id'], 'active'); // make subscription active
+			$this->storage->updateStatus($subscription['user_id'], 'activefdvdf'); // make subscription active
 		}
 
 		IlluminateEvent::fire('cashew.payment.success', array($subscription['user_id'], $invoice));
