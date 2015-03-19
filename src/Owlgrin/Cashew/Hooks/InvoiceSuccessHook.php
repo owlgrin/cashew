@@ -40,19 +40,15 @@ class InvoiceSuccessHook implements Hook {
 		$invoice = $event->invoice();
 		$subscription = $this->storage->subscription($event->customer(), true);
 
-		if($invoice->total() > 0.00) // only when total is greater than 0
+		if($invoice instanceof StorableInvoice)
 		{
-			if($invoice instanceof StorableInvoice)
-			{
-				$invoice->store($subscription['user_id']); // store invoice
-			}
-
-			if($this->cashew->user($subscription['user_id'])->hasCard() and $invoice->total() > 0.00)
-			{
-				$this->storage->updateStatus($subscription['user_id'], 'active'); // make subscription active
-			}
+			$invoice->store($subscription['user_id']); // store invoice
 		}
 
+		if($this->cashew->user($subscription['user_id'])->hasCard())
+		{
+			$this->storage->updateStatus($subscription['user_id'], 'active'); // make subscription active
+		}
 
 		IlluminateEvent::fire('cashew.payment.success', array($subscription['user_id'], $invoice));
 	}
