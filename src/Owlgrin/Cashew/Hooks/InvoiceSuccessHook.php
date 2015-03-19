@@ -40,7 +40,7 @@ class InvoiceSuccessHook implements Hook {
 		$invoice = $event->invoice();
 		$subscription = $this->storage->subscription($event->customer(), true);
 
-		if($invoice instanceof StorableInvoice)
+		if($invoice instanceof StorableInvoice and $invoice->total() > 0.00)
 		{
 			$invoice->store($subscription['user_id']); // store invoice
 		}
