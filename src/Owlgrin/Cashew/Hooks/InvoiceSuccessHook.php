@@ -5,7 +5,9 @@ use Owlgrin\Cashew\Invoice\StorableInvoice;
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Hooks\Hook;
 use Owlgrin\Cashew\Event\Event;
-use Owlgrin\Cashew\Cashew;
+use Owlgrin\Cashew\CashewFacade as Cashew;
+
+use Carbon\Carbon;
 
 /**
  * Hook to handle successful payment
@@ -18,16 +20,9 @@ class InvoiceSuccessHook implements Hook {
 	 */
 	protected $storage;
 
-	/**
-	 * Cahew instance
-	 * @var Cashew
-	 */
-	protected $cashew;
-
-	public function __construct(Storage $storage, Cashew $cashew)
+	public function __construct(Storage $storage)
 	{
 		$this->storage = $storage;
-		$this->cashew = $cashew;
 	}
 
 	/**
@@ -40,16 +35,38 @@ class InvoiceSuccessHook implements Hook {
 		$invoice = $event->invoice();
 		$subscription = $this->storage->subscription($event->customer(), true);
 
+		Cashew::user($subscription['user_id']);
+
 		if($invoice instanceof StorableInvoice and $invoice->total() > 0.00)
 		{
 			$invoice->store($subscription['user_id']); // store invoice
 		}
 
-		if($this->cashew->user($subscription['user_id'])->hasCard())
+		if(Cashew::hasCard())
 		{
 			$this->storage->updateStatus($subscription['user_id'], 'active'); // make subscription active
 		}
 
+		if($this->shouldBeExpired($invoice, $subscription))
+		{
+			Cashew::expireCustomer($event->customer());
+
+			IlluminateEvent::fire('cashew.user.expire', array($subscription['user_id']));
+		}
+
+
 		IlluminateEvent::fire('cashew.payment.success', array($subscription['user_id'], $invoice));
+	}
+
+	private function shouldBeExpired($invoice, $subscription)
+	{
+		return (! Cashew::hasCard() and $invoice->total() == 0.00 and $this->isTrialOver($subscription));
+	}
+
+	private function isTrialOver($subscription)
+	{
+		if(is_null($subscription['trial_ends_at'])) return true;
+
+		return Carbon::createFromFormat('Y-m-d H:i:s', $subscription['trial_ends_at'])->startOfDay()->lt(Carbon::today());
 	}
 }
