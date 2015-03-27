@@ -436,4 +436,22 @@ class DbStorage implements Storage {
 			throw new CashewExceptions\DatabaseException;
 		}
 	}
+
+	/**
+	 * Returns all subscriptions
+	 * @return array
+	 */
+	public function subscriptions()
+	{
+		try
+		{
+			return DB::table(Config::get('cashew::tables.subscriptions'))
+				->get();
+		}
+		catch(PDOException $e)
+		{
+			throw new CashewExceptions\DatabaseException;
+		}
+	}
+
 }
