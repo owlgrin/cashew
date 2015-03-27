@@ -71,7 +71,7 @@ class CashewServiceProvider extends ServiceProvider {
 		// binding the command to allow user to switch subscription plan.
 		$this->app->bindShared('command.cashew.switch.plan', function($app)
 		{
-			return new \Owlgrin\Cashew\Commands\CashewSwitchPlanCommand;
+			return app('Owlgrin\Cashew\Commands\CashewSwitchPlanCommand');
 		});
 
 		//	telling laravel what we are providing to the app using the package

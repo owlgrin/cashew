@@ -3,7 +3,9 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Owlgrin\Cashew\Storage\Storage;
 use Cashew;
+use Config;
 
 /**
  * Command to expire users who ended their grace period
@@ -29,6 +31,14 @@ class CashewSwitchPlanCommand extends Command {
 	 * @return void
 	 */
 
+	protected $storage;
+
+	public function __construct(Storage $storage)
+	{
+		parent::__construct();
+		$this->storage = $storage;
+	}
+
 	/**
 	 * Execute the console command.
 	 *
@@ -38,24 +48,32 @@ class CashewSwitchPlanCommand extends Command {
 	{
 		try
 		{
-			$user = $this->argument('user');
 			$plan = $this->argument('plan');
+			$subscriptions = $this->getSubscriptions();
 
-			$this->info('Checking whether user is subscribed or not....');
-
-			if(Cashew::user($user)->getSubscription())
+			foreach($subscriptions as $index => $subscription)
 			{
-				$this->info('Starting switching....');
+				$this->info('Starting switching user with ID: '. $subscription['user_id'] .' to '. $plan . ' plan.');
 
-				Cashew::toPlan($plan);
+				Cashew::user($subscription['user_id'])->toPlan($plan);
 
-				$this->info('Switched successfully!');
+				$this->info('User with ID: '. $subscription['user_id'] .' switched successfully to '. $plan . ' plan.');
 			}
 		}
 		catch(\Exception $e)
 		{
 			$this->error($e);
 		}
+	}
+
+	protected function getSubscriptions()
+	{
+		$user = $this->argument('user');
+
+		if($user === '_ALL')
+			return $this->storage->subscriptions();
+
+		return [$this->storage->subscription($user)];
 	}
 
 	/**
@@ -66,8 +84,8 @@ class CashewSwitchPlanCommand extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('user', InputArgument::REQUIRED, 'Unique identifier of the user whose subscription plan to be switched'),
-			array('plan', InputArgument::REQUIRED, 'Stripe plan to which the user to be switched')
+			array('user', InputArgument::REQUIRED, 'Unique identifier of the user whose subscription plan to be switched.'),
+			array('plan', InputArgument::REQUIRED, 'Stripe plan to which the user to be switched.')
 		);
 	}
 
@@ -79,7 +97,7 @@ class CashewSwitchPlanCommand extends Command {
 	protected function getOptions()
 	{
 		return array(
-			// array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
+			// array('user', null, InputOption::VALUE_OPTIONAL, 'Unique identifier of the user whose subscription plan to be switched.', null),
 		);
 	}
 }
