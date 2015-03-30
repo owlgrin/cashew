@@ -157,7 +157,7 @@ class DbStorage implements Storage {
 					'quantity'             => $subscription->quantity(),
 					'last_four'            => $customer->card()->lastFour(),
 					'card_exp_date'        => $customer->card()->expiryDate(),
-					'status'               => $subscription->status(),
+					'status'          	   => $subscription->status(),
 					'updated_at'           => DB::raw('now()')
 				));
 
@@ -436,22 +436,4 @@ class DbStorage implements Storage {
 			throw new CashewExceptions\DatabaseException;
 		}
 	}
-
-	/**
-	 * Returns all subscriptions
-	 * @return array
-	 */
-	public function subscriptions()
-	{
-		try
-		{
-			return DB::table(Config::get('cashew::tables.subscriptions'))
-				->get();
-		}
-		catch(PDOException $e)
-		{
-			throw new CashewExceptions\DatabaseException;
-		}
-	}
-
 }
