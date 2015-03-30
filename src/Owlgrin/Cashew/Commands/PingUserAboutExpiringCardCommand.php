@@ -44,7 +44,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 			$this->info('Starting mailing....');
 
 			$subscriptions = $this->getSubscriptions();
-			$intervals = explode(',', $this->argument('intervals'));
+			$intervals = $this->argument('intervals');
 
 			foreach($subscriptions as $index => $subscription)
 			{
@@ -60,17 +60,22 @@ class PingUserAboutExpiringCardCommand extends Command {
 		}
 	}
 
+	/**
+	 * Returns the list of subscriptions based on input
+	 *
+	 * @return array
+	 */
 	protected function getSubscriptions()
 	{
-		$user = $this->option('user');
-
-		if(is_null($user))
+		// If no user passed, get all subscriptions
+		if(is_null($user = $this->option('user')))
 		{
 			return DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('last_four', '<>', 'null')
 				->get();
 		}
 
+		// Otherwise, return the subscription for that particular user only
 		return DB::table(Config::get('cashew::tables.subscriptions'))
 				->where('user_id', $user)
 				->where('last_four', '<>', 'null')
@@ -81,7 +86,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 	{
 		$daysLeft = $this->getDaysDiffFromToday($subscription['card_exp_date']);
 
-		$this->info('Sending mail to User with ID: ' . $subscription['user_id']);
+		$this->info('Pinging about expiring card to user with ID: ' . $subscription['user_id']);
 
 		IlluminateEvent::fire('cashew.card.expiring', array($subscription['user_id'], $daysLeft));
 	}
@@ -106,7 +111,7 @@ class PingUserAboutExpiringCardCommand extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('intervals', InputArgument::REQUIRED, '(Array) Intervals on which a required user to be pinged')
+			array('intervals', InputArgument::IS_ARRAY, '(Array) Intervals on which a required user to be pinged')
 		);
 	}
 

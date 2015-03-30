@@ -234,8 +234,8 @@ class Cashew {
 		$subscription = $this->storage->subscription($customerId, true);
 		$this->user($subscription['user_id']);
 
-		$this->cancelNow();
-		$this->storage->expire($this->user);
+		// and then call the method which already expires using user
+		$this->expire();
 	}
 
 	/**
@@ -263,6 +263,7 @@ class Cashew {
 		$subscription = $this->gateway->cancel($this->subscription['customer_id'], $atPeriodEnd);
 		$this->storage->cancel($this->user, $subscription);
 
+		// refreshing subscription to take the updated value
 		$this->refreshSubscription();
 
 		return $this;
@@ -310,6 +311,7 @@ class Cashew {
 		if( ! $this->subscription)
 			throw new CashewExceptions\NoSubscriptionException;
 
+		// we are allowing invoices to be fetched from local copy because that is super fast
 		return $fromLocal
 			? $this->storage->getInvoices($this->subscription['user_id'], $page, $limit)
 			: $this->gateway->invoices($this->subscription['customer_id']);
@@ -379,26 +381,51 @@ class Cashew {
 		return $this->gateway->nextInvoice($this->subscription['customer_id']);
 	}
 
+	/**
+	 * Returns the status of subscription
+	 *
+	 * @return string
+	 */
 	public function status()
 	{
 		return $this->subscription['status'];
 	}
 
+	/**
+	 * Returns whether a subscription is active or not
+	 *
+	 * @return boolean
+	 */
 	public function active()
 	{
 		return $this->onTrial() or $this->onGrace() or $this->subscribed();
 	}
 
+	/**
+	 * Returns whether a subscription is inactive or not
+	 *
+	 * @return boolean
+	 */
 	public function inactive()
 	{
 		return ! $this->active();
 	}
 
+	/**
+	 * Checks whether the user has card on file or not?
+	 *
+	 * @return boolean
+	 */
 	public function hasCard()
 	{
 		return is_null($this->subscription['last_four']) ? false : true;
 	}
 
+	/**
+	 * Checks whether the user has an active card on file or not?
+	 *
+	 * @return boolean
+	 */
 	public function hasActiveCard()
 	{
 		if( ! is_null($this->subscription['card_exp_date']))
@@ -410,6 +437,11 @@ class Cashew {
 		return $this->hasCard();
 	}
 
+	/**
+	 * Checks whether the user is on trial period.
+	 *
+	 * @return boolean
+	 */
 	public function onTrial()
 	{
 		if( ! $this->subscription)
@@ -455,6 +487,12 @@ class Cashew {
 		return $this->status() == self::STATUS_CANCEL;
 	}
 
+	/**
+	 * Check is subscription is for a given plan
+	 *
+	 * @param  string $plan
+	 * @return boolean
+	 */
 	public function onPlan($plan)
 	{
 		if( ! $this->subscription)
@@ -463,6 +501,12 @@ class Cashew {
 		return $this->subscription['plan'] == $plan;
 	}
 
+	/**
+	 * Returns the timestamp for trial end based on number of days
+	 *
+	 * @param  number|'now' $days
+	 * @return number|'now'
+	 */
 	private function getTrialEnd($days = null)
 	{
 		// special case for ending trial right now
@@ -487,6 +531,12 @@ class Cashew {
 		}
 	}
 
+	/**
+	 * Extends trial period by given number of days
+	 *
+	 * @param  array  $options 
+	 * @return Owlgrin\Cashew\Cashew
+	 */
 	public function extendTrial($options = array())
 	{
 		// if new plan passed, then consider it else default to the previous plan

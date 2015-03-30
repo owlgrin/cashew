@@ -1,6 +1,7 @@
 <?php namespace Owlgrin\Cashew;
 
 use Illuminate\Support\ServiceProvider;
+
 use Config;
 use Stripe;
 
