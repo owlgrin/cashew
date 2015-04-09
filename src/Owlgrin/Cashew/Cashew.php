@@ -142,18 +142,6 @@ class Cashew {
 	}
 
 	/**
-	 * Charge a customer
-	 * @param  array  $options
-	 */
-	public function charge($options)
-	{
-		if( ! $this->subscription)
-			throw new CashewExceptions\NoSubscriptionException;
-
-		return $this->gateway->charge($options);
-	}
-
-	/**
 	 * Adds a coupon to subscription
 	 * @param  string $coupon
 	 * @return Cashew
@@ -365,10 +353,6 @@ class Cashew {
 	{
 		if( ! $this->subscription)
 			throw new CashewExceptions\NoSubscriptionException;
-
-		$item['customer'] = $this->subscription['customer_id'];
-		$item['subscription'] = $this->subscription['subscription_id'];
-		$item['currency'] = 'usd';
 
 		return $this->gateway->invoiceItem($item);
 	}
