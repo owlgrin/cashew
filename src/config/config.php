@@ -43,5 +43,10 @@ return array(
 	/**
 	 * Default plan to which the newly created user should be subscribed to.
 	 */
-	'plan' => getenv('CASHEW_PLAN') ?: 'plan-name'
+	'plan' => getenv('CASHEW_PLAN') ?: 'plan-name',
+
+	/**
+	 * Description of the subscription.
+	 */
+	'description' => 'description'
 );
