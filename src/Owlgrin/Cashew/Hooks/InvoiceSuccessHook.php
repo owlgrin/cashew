@@ -5,6 +5,7 @@ use Owlgrin\Cashew\Invoice\StorableInvoice;
 use Owlgrin\Cashew\Storage\Storage;
 use Owlgrin\Cashew\Hooks\Hook;
 use Owlgrin\Cashew\Event\Event;
+use Owlgrin\Cashew\Gateway\Gateway;
 use Owlgrin\Cashew\CashewFacade as Cashew;
 
 use Carbon\Carbon;
@@ -20,9 +21,16 @@ class InvoiceSuccessHook implements Hook {
 	 */
 	protected $storage;
 
-	public function __construct(Storage $storage)
+	/**
+	 * Instance of gateway implementation
+	 * @var Gateway
+	 */
+	protected $gateway;
+
+	public function __construct(Storage $storage, Gateway $gateway)
 	{
 		$this->storage = $storage;
+		$this->gateway = $gateway;
 	}
 
 	/**
@@ -37,39 +45,19 @@ class InvoiceSuccessHook implements Hook {
 
 		Cashew::user($subscription['user_id']);
 
-		if($invoice instanceof StorableInvoice and $invoice->total() > 0.00)
+		if($invoice->total() > 0.00)
 		{
-			$invoice->store($subscription['user_id']); // store invoice
+			if($invoice instanceof StorableInvoice)
+			{
+				$invoice->store($subscription['user_id']); // store invoice
+			}
+
+			if(Cashew::hasCard())
+			{
+				$this->storage->updateStatus($subscription['user_id'], 'active'); // make subscription active
+			}
 		}
-
-		if(Cashew::hasCard())
-		{
-			$this->storage->updateStatus($subscription['user_id'], 'active'); // make subscription active
-		}
-
-		// should NOT expire when invoice is successfully paid. even if the amount is ZERO.
-		// otherwise, how could we create 'admin' accounts
-		// 
-		// if($this->shouldBeExpired($invoice, $subscription))
-		// {
-		// 	Cashew::expireCustomer($event->customer());
-
-		// 	IlluminateEvent::fire('cashew.user.expire', array($subscription['user_id']));
-		// }
-
 
 		IlluminateEvent::fire('cashew.payment.success', array($subscription['user_id'], $invoice));
 	}
-
-	// private function shouldBeExpired($invoice, $subscription)
-	// {
-	// 	return (! Cashew::hasCard() and $invoice->total() == 0.00 and $this->isTrialOver($subscription));
-	// }
-
-	// private function isTrialOver($subscription)
-	// {
-	// 	if(is_null($subscription['trial_ends_at'])) return true;
-
-	// 	return Carbon::createFromFormat('Y-m-d H:i:s', $subscription['trial_ends_at'])->startOfDay()->lt(Carbon::today());
-	// }
 }

@@ -142,6 +142,18 @@ class Cashew {
 	}
 
 	/**
+	 * Charge a customer
+	 * @param  array  $options
+	 */
+	public function charge($options)
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->gateway->charge($options);
+	}
+
+	/**
 	 * Adds a coupon to subscription
 	 * @param  string $coupon
 	 * @return Cashew
@@ -322,12 +334,14 @@ class Cashew {
 	 * @param  string $invoiceId
 	 * @return array
 	 */
-	public function invoice($invoiceId)
+	public function invoice($invoiceId, $fromLocal = true)
 	{
 		if( ! $this->subscription)
 			throw new CashewExceptions\NoSubscriptionException;
 
-		return $this->storage->getInvoice($this->subscription['user_id'], $invoiceId);
+		return $fromLocal
+			? $this->storage->getInvoice($this->subscription['user_id'], $invoiceId)
+			: $this->gateway->invoice($invoiceId);
 	}
 
 	/**
@@ -351,6 +365,10 @@ class Cashew {
 	{
 		if( ! $this->subscription)
 			throw new CashewExceptions\NoSubscriptionException;
+
+		$item['customer'] = $this->subscription['customer_id'];
+		$item['subscription'] = $this->subscription['subscription_id'];
+		$item['currency'] = 'usd';
 
 		return $this->gateway->invoiceItem($item);
 	}
@@ -534,7 +552,7 @@ class Cashew {
 	/**
 	 * Extends trial period by given number of days
 	 *
-	 * @param  array  $options 
+	 * @param  array  $options
 	 * @return Owlgrin\Cashew\Cashew
 	 */
 	public function extendTrial($options = array())

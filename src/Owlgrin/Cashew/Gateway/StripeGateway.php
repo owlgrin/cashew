@@ -191,6 +191,36 @@ class StripeGateway implements Gateway {
 	}
 
 	/**
+	 * Returns the invoice for the subscription
+	 * @param  string  $customer
+	 * @param  integer $invoice
+	 * @return invoice
+	 */
+	public function invoice($invoice)
+	{
+		try
+		{
+			return new StripeInvoice(Stripe_Invoice::retrieve($invoice));
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	/**
 	 * Returns the upcoming invoice
 	 * @param  string $customer
 	 * @return Invoice
