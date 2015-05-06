@@ -100,6 +100,24 @@ class StripeInvoice implements Invoice, StorableInvoice {
 	}
 
 	/**
+	 * Returns paid status of invoice
+	 * @return string
+	 */
+	public function isPaid()
+	{
+		return $this->invoice['paid'];
+	}
+
+	/**
+	 * Returns closed status of invoice
+	 * @return string
+	 */
+	public function isClosed()
+	{
+		return $this->invoice['closed'];
+	}
+
+	/**
 	 * Returns the total of invoice
 	 * @return string
 	 */

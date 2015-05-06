@@ -5,6 +5,7 @@ use Stripe_ApiConnectionError, Stripe_InvalidRequestError, Stripe_CardError, Str
 use Owlgrin\Cashew\Customer\StripeCustomer;
 use Owlgrin\Cashew\Subscription\StripeSubscription;
 use Owlgrin\Cashew\Invoice\StripeInvoice;
+use Owlgrin\Cashew\InvoiceItem\StripeInvoiceItem;
 use Owlgrin\Cashew\Event\StripeEvent;
 use Owlgrin\Cashew\Exceptions\Exception, Owlgrin\Cashew\Exceptions\CardException, Owlgrin\Cashew\Exceptions\NetworkException, Owlgrin\Cashew\Exceptions\InputException;
 
@@ -252,6 +253,43 @@ class StripeGateway implements Gateway {
 	}
 
 	/**
+	 * Returns invoice items of upcoming invoice
+	 * @param  string $customer
+	 * @return Invoice Items
+	 */
+	public function invoiceItemsOfNextInvoice($customer)
+	{
+		try
+		{
+			$invoice = new StripeInvoice(Stripe_Invoice::upcoming(compact('customer')));
+
+			$invoiceItems = [];
+			foreach($invoice->lines() as $key => $invoiceItem)
+			{
+				array_push($invoiceItems, new StripeInvoiceItem($invoiceItem));
+			}
+
+			return $invoiceItems;
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	/**
 	 * Returns the event from the id
 	 * @param  string $event
 	 * @return Event
@@ -347,6 +385,34 @@ class StripeGateway implements Gateway {
 	}
 
 	/**
+	 * Deletes an invoice item.
+	 * @param  string  $itemId
+	 */
+	public function deleteInvoiceItem($itemId)
+	{
+		try
+		{
+			Stripe_InvoiceItem::retrieve($itemId)->delete();
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	/**
 	 * Get customer.
 	 * @param  string  $id
 	 * @return Customer
@@ -356,6 +422,40 @@ class StripeGateway implements Gateway {
 		try
 		{
 			return new StripeCustomer(Stripe_Customer::retrieve($id));
+		}
+		catch(Stripe_InvalidRequestError $e)
+		{
+			throw new InputException;
+		}
+		catch(Stripe_ApiConnectionError $e)
+		{
+			throw new NetworkException;
+		}
+		catch(Stripe_Error $e)
+		{
+			throw new Exception;
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+	}
+
+	/**
+	 * Creates an invoice.
+	 * @param  string  $customer
+	 * @param  boolean  $payNow
+	 * @return Invoice
+	 */
+	public function createInvoice($customer, $payNow = true)
+	{
+		try
+		{
+			$invoice = $payNow
+						? Stripe_Invoice::create(compact('customer'))->pay()
+						: Stripe_Invoice::create(compact('customer'));
+
+			return new StripeInvoice($invoice);
 		}
 		catch(Stripe_InvalidRequestError $e)
 		{
