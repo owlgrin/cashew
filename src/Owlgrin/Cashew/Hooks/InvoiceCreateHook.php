@@ -29,12 +29,11 @@ class InvoiceCreateHook implements Hook {
 	{
 		$subscription = $this->storage->subscription($event->customer(), true);
 
-		$invoice = $event->invoice();
-
-		if($invoice->isPaid() || $invoice->isClosed()) return;
+		// To avoid the case when invoice created at the time of canceling subscription.
+		if($subscription['status'] == 'expired') return;
 
 		// we are not doing anything special here,
 		// just firing the event to be handeled by the app.
-		IlluminateEvent::fire('cashew.invoice.created', array($subscription['user_id'], $invoice));
+		IlluminateEvent::fire('cashew.invoice.created', array($subscription['user_id'], $event->invoice()));
 	}
 }
