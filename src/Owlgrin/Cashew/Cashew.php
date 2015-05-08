@@ -219,7 +219,7 @@ class Cashew {
 	 */
 	public function expire()
 	{
-		$this->cancelNow();
+		$this->cancel();
 		$this->storage->expire($this->user);
 	}
 
@@ -372,6 +372,18 @@ class Cashew {
 	}
 
 	/**
+	 * Deletes the invoice item
+	 * @param  string $invoiceItemId
+	 */
+	public function deleteInvoiceItem($invoiceItemId)
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->gateway->deleteInvoiceItem($invoiceItemId);
+	}
+
+	/**
 	 * Returns the upcoming invoice
 	 * @return Invoice
 	 */
@@ -381,6 +393,30 @@ class Cashew {
 			throw new CashewExceptions\NoSubscriptionException;
 
 		return $this->gateway->nextInvoice($this->subscription['customer_id']);
+	}
+
+	/**
+	 * Returns invoice items the upcoming invoice
+	 * @return array
+	 */
+	public function invoiceItemsOfNextInvoice()
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->gateway->invoiceItemsOfNextInvoice($this->subscription['customer_id']);
+	}
+
+	/**
+	 * Creates an invoice of all pending invoice items.
+	 * @return Invoice
+	 */
+	public function createInvoice($payNow = true)
+	{
+		if( ! $this->subscription)
+			throw new CashewExceptions\NoSubscriptionException;
+
+		return $this->gateway->createInvoice($this->subscription['customer_id'], $payNow);
 	}
 
 	/**
