@@ -447,13 +447,13 @@ class StripeGateway implements Gateway {
 	 * @param  boolean  $payNow
 	 * @return Invoice
 	 */
-	public function createInvoice($customer, $payNow = true)
+	public function createInvoice($customer, $metadata = [], $payNow = true)
 	{
 		try
 		{
 			$invoice = $payNow
-						? Stripe_Invoice::create(compact('customer'))->pay()
-						: Stripe_Invoice::create(compact('customer'));
+						? Stripe_Invoice::create(['customer' => $customer, 'metadata' => $metadata])->pay()
+						: Stripe_Invoice::create(['customer' => $customer, 'metadata' => $metadata]);
 
 			return new StripeInvoice($invoice);
 		}
