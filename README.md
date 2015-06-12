@@ -3,6 +3,8 @@
 
 Cashew allows you to integrate Stripe subscription billing in the most easiet way. We handle all the headache in maintaining the edge cases in the the subscription billing, while exposing an easy API to consume.
 
+Cashew works with Laravel 4.2 as well as Laravel 5.
+
 ### Installation
 
 To install the package, include the following in your `composer.json`.
